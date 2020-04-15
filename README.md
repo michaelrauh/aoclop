@@ -1,9 +1,4 @@
-# Programming language club plan
-
-## Introduction to computation
-1. finite state machines - implementing a regular language
-1. push down automata - implementing a context free grammar
-1. Turing machines and lambdas - tape and the Turing tarpit - an introduction to the expressiveness problem [Alan Turing (1936)], [Alonzo Church (1936)]
+This is a project to attempt to make a language that is well-suited to solving advent of code problems. Below, for reference, is a brief, slightly incorrect overview of programming language features that are being kept in mind for the project.
 
 
 ## History of language features
