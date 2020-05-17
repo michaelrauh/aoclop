@@ -1,4 +1,4 @@
-hello
-here
-are
-words
+3
+6
+9
+12
