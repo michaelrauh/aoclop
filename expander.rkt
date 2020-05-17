@@ -8,10 +8,12 @@
 (require 2htdp/batch-io)
 (define (read file-number delim)
   (define contents (read-file (string-append (number->string file-number) ".txt")))
-  (if (equal? "nl" delim)
-      (string-split contents "\n")
-      (string-split contents ", ")))
+  (string-split contents delim))
 (provide read)
+
+(define-macro-cases delimiter
+  [(delimiter "nl") #'"\n"])
+(provide delimiter)
 
 (module+ test
   (require rackunit)
