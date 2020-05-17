@@ -7,6 +7,7 @@
   (lexer-srcloc
    ["read:" (token 'READ lexeme)]
    ["\n" (token 'NEWLINE lexeme)]
+   ["nl" (token 'DELIMITER lexeme)]
    [digits (token 'INTEGER (string->number lexeme))]
    [whitespace (token lexeme #:skip? #t)]))
 (provide aoclop-lexer)
@@ -17,19 +18,18 @@
   (define (lex str)
     (apply-port-proc aoclop-lexer str))
   
-  (check-equal? (lex "read: 1 \n |") (list
-   (srcloc-token
-    (token-struct 'READ "read:" #f #f #f #f #f)
-    (srcloc 'string 1 0 1 5))
-   (srcloc-token (token-struct '| | #f #f #f #f #f #t) (srcloc 'string 1 5 6 1))
-   (srcloc-token
-    (token-struct 'INTEGER 1 #f #f #f #f #f)
-    (srcloc 'string 1 6 7 1))
-   (srcloc-token (token-struct '| | #f #f #f #f #f #t) (srcloc 'string 1 7 8 1))
+   (list
    (srcloc-token
     (token-struct 'NEWLINE "\n" #f #f #f #f #f)
-    (srcloc 'string 1 8 9 1))
-   (srcloc-token (token-struct '| | #f #f #f #f #f #t) (srcloc 'string 2 0 10 1))
+    (srcloc 'string 1 0 1 1))
    (srcloc-token
-    (token-struct 'PIPE "|" #f #f #f #f #f)
-    (srcloc 'string 2 1 11 1)))))
+    (token-struct 'READ "read:" #f #f #f #f #f)
+    (srcloc 'string 2 0 2 5))
+   (srcloc-token (token-struct '| | #f #f #f #f #f #t) (srcloc 'string 2 5 7 1))
+   (srcloc-token
+    (token-struct 'INTEGER 1 #f #f #f #f #f)
+    (srcloc 'string 2 6 8 1))
+   (srcloc-token (token-struct '| | #f #f #f #f #f #t) (srcloc 'string 2 7 9 1))
+   (srcloc-token
+    (token-struct 'DELIMITER "nl" #f #f #f #f #f)
+    (srcloc 'string 2 8 10 2))))
