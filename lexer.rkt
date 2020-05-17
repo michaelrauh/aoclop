@@ -10,6 +10,7 @@
    ["|" (token 'PIPE lexeme)]
    [digits (token 'INTEGER (string->number lexeme))]
    [whitespace (token lexeme #:skip? #t)]))
+(provide aoclop-lexer)
 
 
 (module+ test
