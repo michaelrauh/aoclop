@@ -1,2 +1,6 @@
 #lang brag
-aoclop-program : READ INTEGER NEWLINE PIPE
+aoclop-program : read-statement
+read-statement : /read integer newline
+read           : READ
+@integer       : INTEGER
+@newline       : NEWLINE
