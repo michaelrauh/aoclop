@@ -15,15 +15,17 @@
 ; '(aoclop-program (read 1 (delimiter "nl")) (op "/" 3))
 ; (read 1 '\n')
 ; (div-each 3)
+; (floor-each)
+; (sum-all)
+
+; '(aoclop-program (read 1 (delimiter "nl")) (op "/" 3) (op "floor")
+; (sum (map (λ (x) (floor (/ x 3)) (read 1 '\n'))))
 
 ; '(aoclop-program (read 1 (delimiter "nl")) (op "/" 3))
-; (map (λ (x) (/ x 3)) (read 1 '\n'))
-
-; '(aoclop-program (read 1 (delimiter "nl")) (op "/" 3))
-; (for/fold
+; (sum (for/fold
 ; ([res (read 1 '\n')])
-; ([lambdas '((λ (x) (/ x 3))))])
-;  ((lambdas i)))
+; ([lambdas '((λ (x) (/ x 3)) (λ (x) (floor x)))])
+;  ((lambdas i))))
 
 ; '(aoclop-program (read 1 (delimiter "nl")) (op "/" 3))
-; (map (compose1 (λ (x) (/ x 3))) (read 1 '\n'))
+; (sum (map (compose1 (λ (x) (/ x 3)) (λ (x) (floor x))) (read 1 '\n')))
