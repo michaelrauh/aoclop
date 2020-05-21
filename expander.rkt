@@ -1,11 +1,8 @@
 #lang br/quicklang
 
-(define-macro (aoclop-module-begin (aoclop-program READ OP))
-  (with-pattern ([(read NUM DELIM-EXPR) #'READ]
-                 [(op FUNC ARG) #'OP])
-    
+(define-macro (aoclop-module-begin (aoclop-program READ (op FUNC ARG)))
   #'(#%module-begin
-     (op FUNC ARG (read NUM DELIM-EXPR)))))  ; this line shows that the with pattern broke things down too much
+     (op FUNC ARG READ)))
 (provide (rename-out [aoclop-module-begin #%module-begin]))
 
 (require 2htdp/batch-io)
