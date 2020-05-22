@@ -15,7 +15,9 @@
   [(op "/" NUMBER READ-EXPR) #'(map (λ (x) (/ (string->number x) NUMBER)) READ-EXPR)]
   [(op "floor" READ-EXPR) #'(map (λ (x) (floor (string->number x))) READ-EXPR)]
   [(op "/" NUMBER READ-EXPR (op "floor")) #'(map (λ (x) (floor (/ (string->number x) NUMBER))) READ-EXPR)]
-  [(op "floor" READ-EXPR (op "/" NUMBER)) #'(map (λ (x) (/ (floor (string->number x)) NUMBER)) READ-EXPR)])
+  [(op "floor" READ-EXPR (op "/" NUMBER)) #'(map (λ (x) (/ (floor (string->number x)) NUMBER)) READ-EXPR)]
+  [(op "floor" READ-EXPR (op "floor")) #'(map (λ (x) (floor (floor (string->number x)))) READ-EXPR)]
+  [(op "/" NUMBER READ-EXPR (op "/" NUMBER2)) #'(map (λ (x) (/ (/ (string->number x) NUMBER) NUMBER2)) READ-EXPR)])
 (provide op)
 
 (define-macro-cases delimiter
