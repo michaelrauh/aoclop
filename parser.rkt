@@ -1,5 +1,6 @@
 #lang brag
-aoclop-program : /NEWLINE read op* /NEWLINE
+aoclop-program : /NEWLINE read scope-block /NEWLINE
 read           : /READ INTEGER delimiter
+scope-block    : /PIPE /DOWNSCOPE /PIPE op /PIPE /UPSCOPE
 delimiter      : DELIMITER
-op             : /PIPE OP [INTEGER]
+op             : OP
