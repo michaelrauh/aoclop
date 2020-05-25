@@ -9,8 +9,9 @@
   #'(map (λ (x) (ops OP x)) READ))
 (provide scope-block)
 
-(define-macro (ops (op "floor") X)
-  #'(floor X))
+(define-macro-cases ops
+  [(ops (op "floor") X) #'(floor X)]
+  [(ops (op "floor" OTHEROP) X) #'(floor (ops OTHEROP X))])
 
 (define-macro-cases delimiter
   [(delimiter "nl") #'"\n"])
