@@ -8,8 +8,10 @@
    ["read:" (token 'READ lexeme)]
    ["\n" (token 'NEWLINE lexeme)]
    ["nl" (token 'DELIMITER lexeme)]
-   ["/" (token 'OP lexeme)]
+   ["floor" (token 'OP lexeme)]
    ["|" (token 'PIPE lexeme)]
+   ["^" (token 'UPSCOPE lexeme)]
+   ["v" (token 'DOWNSCOPE lexeme)]
    [digits (token 'INTEGER (string->number lexeme))]
    [whitespace (token lexeme #:skip? #t)]))
 (provide aoclop-lexer)
