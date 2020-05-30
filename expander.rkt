@@ -6,12 +6,17 @@
 (provide (rename-out [aoclop-module-begin #%module-begin]))
 
 (define-macro (scope-block OP READ)
-  #'(map (λ (x) (ops OP x)) READ))
+  #'(map (λ (x) (OP x)) READ))
 (provide scope-block)
 
-(define-macro-cases ops
-  [(ops (op "floor") X) #'(floor X)]
-  [(ops (op "floor" OTHEROP) X) #'(floor (ops OTHEROP X))])
+(define-macro (all-ops OPS ...)
+  #''(OPS ...))
+(provide all-ops)
+    
+
+;(define-macro-cases ops
+;  [(ops (op "floor") X) #'(floor X)]
+;  [(ops (op "floor" OTHEROP) X) #'(floor (ops OTHEROP X))])
 
 (define-macro-cases delimiter
   [(delimiter "nl") #'"\n"])
