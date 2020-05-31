@@ -8,18 +8,15 @@
   (define the-data (reverse (cadr lst)))
   (define lambda-x (car the-data))
   (define ops (cdr the-data))
-  (datum->syntax stx `(x-then-ops-in-order(,lambda-x ,@ops))))
+  (datum->syntax stx `(x-then-ops-in-order(,lambda-x ,ops))))
 
 (define-syntax (x-then-ops-in-order stx)
-  (define lst (cadr (syntax->datum stx)))
-  (define lambda-x-datum (car lst))
-  (define cur-op-datum (cadr lst))
-  (define len (length (cdr lst)))
-  (cond
-    [(and (> len 1) (eq? "add1" (cadr cur-op-datum))) (datum->syntax stx `(add1 (x-then-ops-in-order(,lambda-x-datum ,@(cdr (cdr lst))))))]
-    [(and (> len 1) (eq? "floor" (cadr cur-op-datum))) (datum->syntax stx `(floor (x-then-ops-in-order(,lambda-x-datum ,@(cdr (cdr lst))))))]
-    [(eq? "add1" (cadr cur-op-datum)) (datum->syntax stx `(add1 ,lambda-x-datum))]
-    [(eq? "floor" (cadr cur-op-datum)) (datum->syntax stx `(floor ,lambda-x-datum))]))
+  (syntax-case stx ()
+    [(_ (lambda-x (ops ...))) (syntax-case #'(ops ...) ()
+                              [((_ "add1")) #'(add1 lambda-x)]
+                                [((_ "floor")) #'(floor lambda-x)]
+                                [((_ "add1") otherop ...) #'(floor (x-then-ops-in-order(lambda-x (otherop ...))))])])) ; I think we need to build things from the outside in, which means dropping the reverse. This should simplify the reverse macro in any case.
+
 
 (define-syntax-rule (delimiter "nl")
   "\n")
@@ -31,4 +28,4 @@
   (map string->number strings))
 (provide read)
 
-(aoclop-program (read 1 (delimiter "nl")) (scope-block (all-ops (op "add1") (op "floor"))))
+(aoclop-program (read 1 (delimiter "nl")) (scope-block (all-ops (op "floor") (op "add1"))))
