@@ -17,6 +17,7 @@
   (define len (length (cdr lst)))
   (cond
     [(and (> len 1) (eq? "add1" (cadr cur-op-datum))) (datum->syntax stx `(add1 (x-then-ops-in-order(,lambda-x-datum ,@(cdr (cdr lst))))))]
+    [(and (> len 1) (eq? "floor" (cadr cur-op-datum))) (datum->syntax stx `(floor (x-then-ops-in-order(,lambda-x-datum ,@(cdr (cdr lst))))))]
     [(eq? "add1" (cadr cur-op-datum)) (datum->syntax stx `(add1 ,lambda-x-datum))]
     [(eq? "floor" (cadr cur-op-datum)) (datum->syntax stx `(floor ,lambda-x-datum))]))
 
@@ -30,4 +31,4 @@
   (map string->number strings))
 (provide read)
 
-(aoclop-program (read 1 (delimiter "nl")) (scope-block (all-ops (op "floor") (op "add1"))))
+(aoclop-program (read 1 (delimiter "nl")) (scope-block (all-ops (op "add1") (op "floor"))))
