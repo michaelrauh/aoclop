@@ -15,7 +15,8 @@
     [(_ (lambda-x (ops ...))) (syntax-case #'(ops ...) ()
                               [((_ "add1")) #'(add1 lambda-x)]
                                 [((_ "floor")) #'(floor lambda-x)]
-                                [((_ "add1") otherop ...) #'(floor (x-then-ops-in-order(lambda-x (otherop ...))))])])) ; I think we need to build things from the outside in, which means dropping the reverse. This should simplify the reverse macro in any case.
+                                [((_ "add1") otherop ...) #'(add1 (x-then-ops-in-order(lambda-x (otherop ...))))]
+                                [((_ "floor") otherop ...) #'(floor (x-then-ops-in-order(lambda-x (otherop ...))))])]))
 
 
 (define-syntax-rule (delimiter "nl")
@@ -28,4 +29,4 @@
   (map string->number strings))
 (provide read)
 
-(aoclop-program (read 1 (delimiter "nl")) (scope-block (all-ops (op "floor") (op "add1"))))
+(aoclop-program (read 1 (delimiter "nl")) (scope-block (all-ops (op "add1") (op "floor") (op "add1"))))
