@@ -1,14 +1,8 @@
 #lang racket
 
 (define-syntax-rule (aoclop-program read-expr (scope-block (all-ops operation ...)))
-  (map (λ (x) (operations (operation ... x))) read-expr))
+  (map (λ (x) (x-then-ops-in-order (x (operation ...)))) read-expr))
 
-(define-syntax (operations stx)
-  (define lst (syntax->datum stx))
-  (define the-data (reverse (cadr lst)))
-  (define lambda-x (car the-data))
-  (define ops (cdr the-data))
-  (datum->syntax stx `(x-then-ops-in-order(,lambda-x ,ops))))
 
 (define-syntax (x-then-ops-in-order stx)
   (syntax-case stx ()
