@@ -10,6 +10,8 @@
 (define-syntax (x-then-ops-in-order stx)
   (syntax-case stx ()
     [(_ (lambda-x (ops ...))) (syntax-case #'(ops ...) ()
+                                [((_ "identity")) #'(identity lambda-x)]
+                                [((_ "identity") otherop ...) #'(identity (x-then-ops-in-order(lambda-x (otherop ...))))]
                                 [((_ "floor")) #'(floor lambda-x)]
                                 [((_ "floor") otherop ...) #'(floor (x-then-ops-in-order(lambda-x (otherop ...))))])]))
 
