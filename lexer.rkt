@@ -9,6 +9,7 @@
    ["\n" (token 'NEWLINE lexeme)]
    ["nl" (token 'DELIMITER lexeme)]
    ["floor" (token 'OP lexeme)]
+   ["identity" (token 'OP lexeme)]
    ["|" (token 'PIPE lexeme)]
    ["^" (token 'UPSCOPE lexeme)]
    ["v" (token 'DOWNSCOPE lexeme)]
