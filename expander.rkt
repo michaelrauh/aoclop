@@ -1,20 +1,20 @@
 #lang br/quicklang
 
-(define-macro (aoclop-module-begin (aoclop-program READ (scope-block OP)))
-  #'(#%module-begin
-     (scope-block OP READ)))
-(provide (rename-out [aoclop-module-begin #%module-begin]))
+(provide #%module-begin)
 
-(define-macro (scope-block OP READ)
-  #'(map (λ (x) (ops OP x)) READ))
-(provide scope-block)
+(define-syntax-rule (aoclop-program read-expr (scope-block (all-ops operation ...)))
+  (map (λ (x) (x-then-ops-in-order (x (operation ...)))) read-expr))
+(provide aoclop-program)
 
-(define-macro-cases ops
-  [(ops (op "floor") X) #'(floor X)]
-  [(ops (op "floor" OTHEROP) X) #'(floor (ops OTHEROP X))])
 
-(define-macro-cases delimiter
-  [(delimiter "nl") #'"\n"])
+(define-syntax (x-then-ops-in-order stx)
+  (syntax-case stx ()
+    [(_ (lambda-x (ops ...))) (syntax-case #'(ops ...) ()
+                                [((_ "floor")) #'(floor lambda-x)]
+                                [((_ "floor") otherop ...) #'(floor (x-then-ops-in-order(lambda-x (otherop ...))))])]))
+
+
+(define-syntax-rule (delimiter "nl") "\n")
 (provide delimiter)
 
 (require 2htdp/batch-io)
