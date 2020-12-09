@@ -1,20 +1,17 @@
 #lang br/quicklang
 
 (provide #%module-begin)
+(require threading)
 
-(define-syntax-rule (aoclop-program read-expr (scope-block (all-ops operation ...)))
-  (map (λ (x) (x-then-ops-in-order (x (operation ...)))) read-expr))
+(define-syntax-rule (aoclop-program read-expr (scope-block (all-ops op ...)))
+  (map (λ~> op ...) read-expr))
 (provide aoclop-program)
 
-
-(define-syntax (x-then-ops-in-order stx)
+(define-syntax (op stx)
   (syntax-case stx ()
-    [(_ (lambda-x (ops ...))) (syntax-case #'(ops ...) ()
-                                [((_ "identity")) #'(identity lambda-x)]
-                                [((_ "identity") otherop ...) #'(identity (x-then-ops-in-order(lambda-x (otherop ...))))]
-                                [((_ "floor")) #'(floor lambda-x)]
-                                [((_ "floor") otherop ...) #'(floor (x-then-ops-in-order(lambda-x (otherop ...))))])]))
-
+    [(op x "identity") #'(identity x)]
+    [(op x "floor") #'(floor x)]))
+(provide op)
 
 (define-syntax-rule (delimiter "nl") "\n")
 (provide delimiter)
@@ -25,3 +22,7 @@
   (define strings (string-split contents delim))
   (map string->number strings))
 (provide read)
+
+;(aoclop-program (read 1 (delimiter "nl")) (scope-block (all-ops (op "identity") (op "floor"))))
+;(map (λ~> (op "identity") (op "floor")) ((read 1 (delimiter "nl"))))
+;(map (λ~> (/ 3) floor (- 2)) '(1 2 3))
