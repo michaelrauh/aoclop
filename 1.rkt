@@ -1,2 +1,2 @@
 #lang aoclop
-read: 1 nl | v | identity | floor | ^
+read: 1 nl | v | / 3 | floor | ^

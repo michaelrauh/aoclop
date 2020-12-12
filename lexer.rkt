@@ -10,6 +10,7 @@
    ["nl" (token 'DELIMITER lexeme)]
    ["floor" (token 'OP lexeme)]
    ["identity" (token 'OP lexeme)]
+   [(concatenation "/ " digits) (token 'OP (list "/" (string->number (trim-ends "/ " lexeme ""))))]
    ["|" (token 'PIPE lexeme)]
    ["^" (token 'UPSCOPE lexeme)]
    ["v" (token 'DOWNSCOPE lexeme)]
@@ -20,8 +21,6 @@
 
 (module+ test
   (require rackunit)
-  (define (lex str)
-    (apply-port-proc aoclop-lexer str))
   
    (list
    (srcloc-token
