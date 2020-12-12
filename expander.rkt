@@ -3,8 +3,8 @@
 (provide #%module-begin)
 (require threading)
 
-(define-syntax-rule (aoclop-program read-expr (scope-block (all-ops op ...)))
-  (map (λ~> op ...) read-expr))
+(define-syntax-rule (aoclop-program read-expr (scope-block (all-ops op ...)) vecop)
+  (apply vecop (map (λ~> op ...) read-expr)))
 (provide aoclop-program)
 
 (define-syntax (op stx)
@@ -15,8 +15,14 @@
 
 (define-syntax (multop stx)
   (syntax-case stx ()
-    [(op x "/" divisor) #'(/ x divisor)]))
+    [(multop x "/" divisor) #'(/ x divisor)]
+    [(multop x "-" difference) #'(- x difference)]))
 (provide multop)
+
+(define-syntax (vecop stx)
+  (syntax-case stx ()
+    [(vecop "sum") #'+]))
+(provide vecop)
 
 (define-syntax-rule (delimiter "nl") "\n")
 (provide delimiter)
@@ -27,7 +33,3 @@
   (define strings (string-split contents delim))
   (map string->number strings))
 (provide read)
-
-;(aoclop-program (read 1 (delimiter "nl")) (scope-block (all-ops (op "identity") (op "floor"))))
-;(map (λ~> (op "identity") (op "floor")) ((read 1 (delimiter "nl"))))
-;(map (λ~> (/ 3) floor (- 2)) '(1 2 3))

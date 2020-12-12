@@ -12,8 +12,10 @@
    ["identity" (token 'OP lexeme)]
    ["|" (token 'PIPE lexeme)]
    ["/" (token 'MULTOP lexeme)]
+   ["-" (token 'MULTOP lexeme)]
    ["^" (token 'UPSCOPE lexeme)]
    ["v" (token 'DOWNSCOPE lexeme)]
+   ["sum" (token 'VECOP lexeme)]
    [digits (token 'INTEGER (string->number lexeme))]
    [whitespace (token lexeme #:skip? #t)]))
 (provide aoclop-lexer)
