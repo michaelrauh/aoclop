@@ -11,6 +11,7 @@
    ["floor" (token 'OP lexeme)]
    ["identity" (token 'OP lexeme)]
    ["|" (token 'PIPE lexeme)]
+   ["/" (token 'MULTOP lexeme)]
    ["^" (token 'UPSCOPE lexeme)]
    ["v" (token 'DOWNSCOPE lexeme)]
    [digits (token 'INTEGER (string->number lexeme))]

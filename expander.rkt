@@ -13,6 +13,11 @@
     [(op x "floor") #'(floor x)]))
 (provide op)
 
+(define-syntax (multop stx)
+  (syntax-case stx ()
+    [(op x "/" divisor) #'(/ x divisor)]))
+(provide multop)
+
 (define-syntax-rule (delimiter "nl") "\n")
 (provide delimiter)
 
