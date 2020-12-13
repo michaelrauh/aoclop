@@ -10,7 +10,8 @@
 (define-syntax (op stx)
   (syntax-case stx ()
     [(op x "identity") #'(identity x)]
-    [(op x "floor") #'(floor x)]))
+    [(op x "floor") #'(floor x)]
+    [(op x "/" divisor) #'(/ x divisor)]))
 (provide op)
 
 (define-syntax-rule (delimiter "nl") "\n")
