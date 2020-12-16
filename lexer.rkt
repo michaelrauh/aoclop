@@ -14,6 +14,8 @@
    ["/" (token 'OP lexeme)]
    ["-" (token 'OP lexeme)]
    ["floor" (token 'OP lexeme)]
+   [">" (token 'GT lexeme)]
+   ["<" (token 'LT lexeme)]
    ["sum" (token 'COLLECT lexeme)]
    ["^" (token 'UPSCOPE lexeme)]
    ["v" (token 'DOWNSCOPE lexeme)]
