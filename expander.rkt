@@ -8,11 +8,18 @@
   (cond [(<= step 0) 0]
         [else (+ step (converge proc step))]))
 
-(define-syntax (aoclop-program stx)
-  (syntax-case stx ()
-    [(aoclop-program read-expr (scope-block (converge-block (all-ops op ...))) collect) #'(apply collect (map ((curry converge) (λ~> op ...)) read-expr))]
-    [(aoclop-program read-expr (scope-block (all-ops op ...)) collect) #'(apply collect (map (λ~> op ...) read-expr))]))
+(define-syntax-rule (aoclop-program read scope-block collect)
+  (apply collect (read-scope scope-block read)))
 (provide aoclop-program)
+
+(define-syntax (read-scope stx)
+  (syntax-case stx ()
+    [(read-scope (scope-block (converge-block all-ops)) read) #'(map ((curry converge) all-ops) read)]
+    [(read-scope (scope-block all-ops) read) #'(map all-ops read)]))
+
+(define-syntax-rule (all-ops op ...)
+  (λ~> op ...))
+(provide all-ops)
 
 (define-syntax (op stx)
   (syntax-case stx ()
@@ -34,4 +41,3 @@
   (define strings (string-split contents delim))
   (map string->number strings))
 (provide read)
-  
