@@ -2,6 +2,9 @@
 
 (provide #%module-begin)
 (require threading)
+(require "../util.rkt")
+(provide read)
+(provide delimiter)
 
 (define (converge proc x)
   (define step (proc x))
@@ -32,12 +35,3 @@
 (define-syntax-rule (collect "sum") +)
 (provide collect)
 
-(define-syntax-rule (delimiter "nl") "\n")
-(provide delimiter)
-
-(require 2htdp/batch-io)
-(define (read file-number delim)
-  (define contents (read-file (string-append (number->string file-number) ".txt")))
-  (define strings (string-split contents delim))
-  (map string->number strings))
-(provide read)
