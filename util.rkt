@@ -7,5 +7,8 @@
   (map string->number strings))
 (provide read)
 
-(define-syntax-rule (delimiter "nl") "\n")
+(define-syntax (delimiter stx)
+  (syntax-case stx ()
+    [(delimiter "nl") #'"\n"]
+    [(delimiter "comma") #'","]))
 (provide delimiter)
