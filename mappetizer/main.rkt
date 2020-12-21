@@ -4,7 +4,7 @@
 (define (read-syntax path port)
   (define parse-tree (parse path (make-tokenizer port path)))
   (strip-bindings
-   #`(module aoclop-mod aoclop/expander
+   #`(module mappetizer-mod mappetizer/expander
        #,parse-tree)))
 
 (module+ reader
