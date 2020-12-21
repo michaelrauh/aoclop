@@ -11,9 +11,9 @@
   (cond [(<= step 0) 0]
         [else (+ step (converge proc step))]))
 
-(define-syntax-rule (aoclop-program read scope-block collect)
+(define-syntax-rule (mappetizer-program read scope-block collect)
   (apply collect (read-scope scope-block read)))
-(provide aoclop-program)
+(provide mappetizer-program)
 
 (define-syntax (read-scope stx)
   (syntax-case stx ()
