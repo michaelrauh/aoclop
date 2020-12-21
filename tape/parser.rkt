@@ -1,5 +1,5 @@
 #lang brag
-tape-program       : /NEWLINE read /NEWLINE
+tape-program       : /NEWLINE* read /NEWLINE* (statement /NEWLINE)* /NEWLINE*
 read               : /READ INTEGER delimiter
 delimiter          : DELIMITER
 statement          : pointer-assignment

@@ -8,6 +8,7 @@
    ["read:" (token 'READ lexeme)]
    ["\n" (token 'NEWLINE lexeme)]
    ["comma" (token 'DELIMITER lexeme)]
+   ["<-" (token 'LEFT-SKINNY-ARROW lexeme)]
    [digits (token 'INTEGER (string->number lexeme))]
    [whitespace (token lexeme #:skip? #t)]))
 (provide tape-lexer)
