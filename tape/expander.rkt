@@ -21,15 +21,15 @@
 (provide pointer-assignment)
 
 (define-syntax (loop stx)
-  (syntax-case stx ()
-    [(_ id-sequence term-clause statement)
-  #'(λ (input-list) (for/fold ([l input-list])
-                            ([index (range 0
-                                           (length input-list)
-                                           (length (cdr 'id-sequence)))])
-                    (begin
-                      (define op 1)
-                      (statement l))))]))
+  (define datum (syntax->datum stx))
+  (define loop (car datum))
+  (define ids (car (cdr datum)))
+  (define terms (car (cdr (cdr datum))))
+  (define statement (car (cdr (cdr (cdr datum)))))
+  (define ctx (datum->syntax stx '(define op 5)))
+  (define stmt (datum->syntax ctx statement))
+  (display stmt)
+  #'(λ (x) x))
 (provide loop)
 
 (tape-program
@@ -38,6 +38,6 @@
     (statement (pointer-assignment 2 2))
     (statement
      (loop
-      (identifier-sequence (identifier op) (identifier foo) (identifier bar))
+      (identifier-sequence (identifier op))
       (termination-clause op "=" 99)
-      (statement (pointer-assignment op 4)))))
+      (statement (pointer-assignment op 'hit)))))
