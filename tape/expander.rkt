@@ -20,14 +20,16 @@
  (λ (l) (lens-set (list-ref-lens target-pos) l new-val)))
 (provide pointer-assignment)
 
-(define-syntax-rule (loop id-sequence term-clause statement)
-  (λ (input-list) (for/fold ([l input-list])
+(define-syntax (loop stx)
+  (syntax-case stx ()
+    [(_ id-sequence term-clause statement)
+  #'(λ (input-list) (for/fold ([l input-list])
                             ([index (range 0
                                            (length input-list)
                                            (length (cdr 'id-sequence)))])
                     (begin
                       (define op 1)
-                      (statement l)))))
+                      (statement l))))]))
 (provide loop)
 
 (tape-program
