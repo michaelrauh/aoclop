@@ -25,7 +25,9 @@
                             ([index (range 0
                                            (length input-list)
                                            (length (cdr 'id-sequence)))])
-                    ((pointer-assignment index 'hit) l))))
+                    (begin
+                      (define op 1)
+                      (statement l)))))
 (provide loop)
 
 (tape-program
@@ -36,4 +38,4 @@
      (loop
       (identifier-sequence (identifier op) (identifier foo) (identifier bar))
       (termination-clause op "=" 99)
-      (statement (pointer-assignment 1 4)))))
+      (statement (pointer-assignment op 4)))))
