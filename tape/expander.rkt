@@ -23,7 +23,7 @@
 (define-syntax-rule (loop id-sequence term-clause statement)
   (λ (input-list) (for/fold ([l input-list])
                             ([index (range (length input-list))])
-                    (statement l))))
+                    ((pointer-assignment index 4) l))))
 (provide loop)
 
 (tape-program
