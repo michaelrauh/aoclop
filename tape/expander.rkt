@@ -6,6 +6,7 @@
 (provide read)
 (provide delimiter)
 (require lens)
+(require racket/stxparam)
 
 (define-syntax-rule (tape-program read statement ...)
   (for/fold ([l read])
@@ -15,6 +16,8 @@
 
 (define-syntax-rule (statement substatement) substatement)
 (provide statement)
+
+(define-syntax-parameter op #'5)
 
 (define (pointer-assignment target-pos new-val)
  (λ (l) (lens-set (list-ref-lens target-pos) l new-val)))
@@ -26,8 +29,8 @@
                                            (length input-list)
                                            (length (cdr 'id-sequence)))])
                     (begin
-                      (define op 1)
-                      (statement l)))))
+                      (syntax-parameterize ([op (λ (stx) #'0)])
+                      (statement l))))))
 (provide loop)
 
 (tape-program
@@ -38,4 +41,4 @@
      (loop
       (identifier-sequence (identifier op) (identifier foo) (identifier bar))
       (termination-clause op "=" 99)
-      (statement (pointer-assignment op 4)))))
+      (statement (pointer-assignment op 'hit)))))
