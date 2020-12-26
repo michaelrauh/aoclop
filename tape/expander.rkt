@@ -22,8 +22,10 @@
 
 (define-syntax-rule (loop id-sequence term-clause statement)
   (λ (input-list) (for/fold ([l input-list])
-                            ([index (range (length input-list))])
-                    ((pointer-assignment index 4) l))))
+                            ([index (range 0
+                                           (length input-list)
+                                           (length (cdr 'id-sequence)))])
+                    ((pointer-assignment index 'hit) l))))
 (provide loop)
 
 (tape-program
@@ -32,6 +34,6 @@
     (statement (pointer-assignment 2 2))
     (statement
      (loop
-      (identifier-sequence (identifier op))
+      (identifier-sequence (identifier op) (identifier foo) (identifier bar))
       (termination-clause op "=" 99)
       (statement (pointer-assignment 1 4)))))
