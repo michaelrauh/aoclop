@@ -22,10 +22,13 @@
 (provide pointer-assignment)
 
 (define-syntax (loop stx)
-  (define stmt (fourth (syntax->datum stx)))
+  (define datum (syntax->datum stx))
+  (define stmt (fourth datum))
+  (define id-seq (second datum))
+  (define ident (second (second id-seq)))
   #`(λ (input-list) (for/fold ([l input-list])
                             ([index (range (length input-list))])
-                    (let ([op index]) (#,stmt l)))))
+                    (let ([#,ident index]) (#,stmt l)))))
 (provide loop)
 
 (tape-program
