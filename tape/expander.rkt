@@ -22,10 +22,10 @@
 (provide pointer-assignment)
 
 (define-syntax (loop stx)
+  (define stmt (fourth (syntax->datum stx)))
   #`(λ (input-list) (for/fold ([l input-list])
                             ([index (range (length input-list))])
-                      (let ([op 2])
-                    ((pointer-assignment index op) l)))))
+                    (let ([op 2]) (#,stmt l)))))
 (provide loop)
 
 (tape-program
@@ -36,4 +36,4 @@
      (loop
       (identifier-sequence (identifier op))
       (termination-clause op "=" 99)
-      (statement (pointer-assignment 1 'hit)))))
+      (statement (pointer-assignment op 'hit)))))
