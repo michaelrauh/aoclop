@@ -6,6 +6,7 @@
 (provide read)
 (provide delimiter)
 (require lens)
+(require (for-syntax racket/list))
 
 (define-syntax-rule (tape-program read statement ...)
   (for/fold ([l read])
@@ -21,15 +22,10 @@
 (provide pointer-assignment)
 
 (define-syntax (loop stx)
-  (define datum (syntax->datum stx))
-  (define loop (car datum))
-  (define ids (car (cdr datum)))
-  (define terms (car (cdr (cdr datum))))
-  (define statement (car (cdr (cdr (cdr datum)))))
-  (define ctx (datum->syntax stx '(define op 5)))
-  (define stmt (datum->syntax ctx statement))
-  (display stmt)
-  #'(λ (x) x))
+  #`(λ (input-list) (for/fold ([l input-list])
+                            ([index (range (length input-list))])
+                      (let ([op 2])
+                    ((pointer-assignment index op) l)))))
 (provide loop)
 
 (tape-program
@@ -40,4 +36,4 @@
      (loop
       (identifier-sequence (identifier op))
       (termination-clause op "=" 99)
-      (statement (pointer-assignment op 'hit)))))
+      (statement (pointer-assignment 1 'hit)))))
