@@ -8,6 +8,7 @@
    ["read:" (token 'READ lexeme)]
    ["comma" (token 'DELIMITER lexeme)]
    ["<-" (token 'LEFT-SKINNY-ARROW lexeme)]
+   ["->" (token 'RIGHT-SKINNY-ARROW lexeme)]
    ["<=" (token 'LEFT-FAT-ARROW lexeme)]
    ["=" (token 'BOOLEAN-DYAD lexeme)]
    ["iterate" (token 'ITERATE lexeme)]

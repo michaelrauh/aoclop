@@ -21,22 +21,24 @@
   (λ (l) (lens-set (list-ref-lens target-pos) l new-val)))
 (provide pointer-assignment)
 
+(define-syntax-rule (tape-read-l (tape-read from to) l)
+  (define to (list-ref l from)))
+
 (define-syntax (loop stx)
-  (define-values (id-seq term-clause stmt) (match (syntax->datum stx)
-                                             [(list _ id-seq term-clause stmt)
-                                              (values id-seq term-clause stmt)]))
+  (define-values (id-seq term-clause tape-read stmt) (match (syntax->datum stx)
+                                             [(list _ id-seq term-clause tape-read stmt)
+                                              (values id-seq term-clause tape-read stmt)]))
     
 
   (define tc (syntax->datum (syntax-case term-clause ()
-                              [(_ op = number)
+                              [(_ op "=" number)
                                #'(= op number)])))
-  (display tc)
   
   (define idents (syntax->datum (syntax-case id-seq ()
-                                  [(identifier-sequence (identifier ident) ...)
+                                  [(identifier-sequence ident ...)
                                    #'(ident ...)])))
   
-  (define number-identifiers (length (cdr id-seq)))
+  (define number-identifiers (length idents))
   (define indices (for/list ([number (range number-identifiers)])
                     `(list-ref l (+ index ,number))))
   (define let-stmt (for/list ([index indices] [ident idents])
@@ -44,21 +46,6 @@
 
   #`(λ (input-list) (for/fold ([l input-list])
                               ([index (range 0 (- (length input-list) #,number-identifiers) #,number-identifiers)])
-                      (let #,let-stmt (#,stmt l)))))
+                      #:break (let #,let-stmt #,tc)
+                      (let #,let-stmt (begin (tape-read-l #,tape-read l) (#,stmt l))))))
 (provide loop)
-
-
-(for/fold ([sum 0])
-          ([i '(1 2 3 4)])
-  #:break (let ([x 4]) (= x i))
-  (+ i sum))
-
-(tape-program
- (read 2 (delimiter "comma"))
- (statement (pointer-assignment 1 12))
- (statement (pointer-assignment 2 2))
- (statement
-  (loop
-   (identifier-sequence (identifier op) (identifier foo) (identifier this-one) (identifier that-one))
-   (termination-clause op "=" 99)
-   (statement (pointer-assignment op 'hit)))))
