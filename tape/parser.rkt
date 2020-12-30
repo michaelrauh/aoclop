@@ -1,6 +1,11 @@
 #lang brag
-tape-program       : /NEWLINE* read /NEWLINE* (statement /NEWLINE)* /NEWLINE*
-read               : /READ INTEGER delimiter
-delimiter          : DELIMITER
-statement          : pointer-assignment
-pointer-assignment : INTEGER /LEFT-SKINNY-ARROW INTEGER
+tape-program        : read statement*
+read                : /READ INTEGER delimiter
+delimiter           : DELIMITER
+statement           : pointer-assignment | loop
+pointer-assignment  : (INTEGER | IDENTIFIER) /LEFT-SKINNY-ARROW (INTEGER | IDENTIFIER)
+loop                : identifier-sequence /LEFT-FAT-ARROW /ITERATE termination-clause read-sequence statement /END
+/read-sequence       : tape-read+
+tape-read           : (INTEGER | IDENTIFIER) /RIGHT-SKINNY-ARROW IDENTIFIER
+identifier-sequence : IDENTIFIER+
+termination-clause  : /UNTIL IDENTIFIER BOOLEAN-DYAD INTEGER
