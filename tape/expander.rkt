@@ -21,13 +21,19 @@
   (λ (l) (lens-set (list-ref-lens target-pos) l new-val)))
 (provide pointer-assignment)
 
-(define-syntax-rule (tape-read-l (tape-read from to) l)
-  (define to (list-ref l from)))
+(define-syntax (tape-read-l stx)
+  (syntax-case stx ()
+    [(_ (tape-read from to) l)
+    #'(define to (list-ref l from))]
+    [(_ (tape-read from to) next l)
+     #'(begin
+       (define to (list-ref l from))
+       (tape-read-l next l))]))
 
 (define-syntax (loop stx)
-  (define-values (id-seq term-clause tape-read stmt) (match (syntax->datum stx)
-                                             [(list _ id-seq term-clause tape-read stmt)
-                                              (values id-seq term-clause tape-read stmt)]))
+  (define-values (id-seq term-clause read-seq stmt) (match (syntax->datum stx)
+                                             [(list _ id-seq term-clause read-seq stmt)
+                                              (values id-seq term-clause read-seq stmt)]))
     
 
   (define tc (syntax->datum (syntax-case term-clause ()
@@ -47,5 +53,5 @@
   #`(λ (input-list) (for/fold ([l input-list])
                               ([index (range 0 (- (length input-list) #,number-identifiers) #,number-identifiers)])
                       #:break (let #,let-stmt #,tc)
-                      (let #,let-stmt (begin (tape-read-l #,tape-read l) (#,stmt l))))))
+                      (let #,let-stmt (begin (tape-read-l #,@read-seq l) (#,stmt l))))))
 (provide loop)
