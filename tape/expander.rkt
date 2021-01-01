@@ -27,10 +27,10 @@
      (with-syntax ([(identifier-sequence id ...) (datum->syntax stx #'identifier-sequence)])
        (with-syntax ([(offset ...) (datum->syntax stx (range (length (syntax->datum #'(id ...)))))])
          #'(λ (input-list) (for/fold ([l input-list])
-                                     ([index (range (length input-list))])
+                                     ([index (range 0 (- (length input-list) (length (syntax->datum #'(id ...))) (length (syntax->datum #'(id ...)))))])
                              (begin
-                               (define-values (id ...) (values (+ index offset) ...))
-                               (substatement l))))))]))
+                               (define-values (id ...) (values (list-ref l (+ index offset)) ...)) ; TODO DRY code
+                               (substatement l))))))])) ; TODO break clause
 (provide loop)
 
 (tape-program
@@ -41,4 +41,4 @@
     (identifier-sequence bar op foo)
     (termination-clause op "=" 99)
     (read-sequence (tape-read 2 temp) (tape-read 4 temptwo))
-    (statement (trace op foo))))))
+    (statement (pointer-assignment bar op))))))
