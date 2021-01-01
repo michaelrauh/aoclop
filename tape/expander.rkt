@@ -25,12 +25,13 @@
   (syntax-case stx ()
     [(_ identifier-sequence termination-clause read-sequence (statement substatement))
      (with-syntax ([(identifier-sequence id ...) (datum->syntax stx #'identifier-sequence)])
-       (with-syntax ([(offset ...) (datum->syntax stx (range (length (syntax->datum #'(id ...)))))])
-         #'(λ (input-list) (for/fold ([l input-list])
-                                     ([index (range 0 (- (length input-list) (length (syntax->datum #'(id ...))) (length (syntax->datum #'(id ...)))))])
-                             (begin
-                               (define-values (id ...) (values (list-ref l (+ index offset)) ...)) ; TODO DRY code
-                               (substatement l))))))])) ; TODO break clause
+       (with-syntax ([step (length (syntax->datum #'(id ...)))])
+         (with-syntax ([(offset ...) (datum->syntax stx (range (syntax->datum #'step)))])
+           #'(λ (input-list) (for/fold ([l input-list])
+                                       ([index (range 0 (- (length input-list) step) step)]) ; TODO add break
+                               (begin
+                                 (define-values (id ...) (values (list-ref l (+ index offset)) ...))
+                                 (substatement l)))))))]))
 (provide loop)
 
 (tape-program
