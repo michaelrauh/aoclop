@@ -27,12 +27,14 @@
      (with-syntax* (
                     [(identifier-sequence id ...) (datum->syntax stx #'identifier-sequence)]
                     [step (length (syntax->datum #'(id ...)))]
-                    [(offset ...) (datum->syntax stx (range (syntax->datum #'step)))])
+                    [(offset ...) (datum->syntax stx (range (syntax->datum #'step)))]
+                    [(_ comp1 "=" comp2) (datum->syntax stx #'termination-clause)])
        #'(λ (input-list) (for/fold ([l input-list])
-                                   ([index (range 0 (- (length input-list) step) step)]) ; TODO add break
-                           (begin
-                             (define-values (id ...) (values (list-ref l (+ index offset)) ...))
-                             (substatement l)))))]))
+                                   ([index (range 0 (- (length input-list) step) step)])
+                           #:break (let-values ([(id ...) (values (list-ref l (+ index offset)) ...)])
+                                    (= comp1 comp2))
+                           (let-values ([(id ...) (values (list-ref l (+ index offset)) ...)])
+                                    (substatement l)))))]))
 (provide loop)
 
 (tape-program
