@@ -25,7 +25,7 @@
   (syntax-case stx ()
     [(_ identifier-sequence termination-clause read-sequence (statement substatement))
      (with-syntax ([(identifier-sequence id ...) (datum->syntax stx #'identifier-sequence)])
-       (with-syntax ([(offset ...) (datum->syntax stx (range 2))])
+       (with-syntax ([(offset ...) (datum->syntax stx (range (length (syntax->datum #'(id ...)))))])
          #'(λ (input-list) (for/fold ([l input-list])
                                      ([index (range (length input-list))])
                              (begin
@@ -38,7 +38,7 @@
  (statement-sequence
   (statement
    (loop
-    (identifier-sequence op foo)
+    (identifier-sequence bar op foo)
     (termination-clause op "=" 99)
     (read-sequence (tape-read 2 temp) (tape-read 4 temptwo))
     (statement (trace op foo))))))
