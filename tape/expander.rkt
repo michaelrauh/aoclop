@@ -28,6 +28,7 @@
   (syntax-case stx ()
     [(_ comp1 "=" comp2)
      #'(= comp1 comp2)]))
+(provide termination-clause)
 
 (define-syntax (loop stx)
   (syntax-case stx ()
