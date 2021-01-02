@@ -24,6 +24,11 @@
 (define-syntax-rule (process-read l (tape-read index target))
   (define target (list-ref l index)))
 
+(define-syntax (termination-clause stx)
+  (syntax-case stx ()
+    [(_ comp1 "=" comp2)
+     #'(= comp1 comp2)]))
+
 (define-syntax (loop stx)
   (syntax-case stx ()
     [(_ identifier-sequence termination-clause read-sequence (statement substatement))
@@ -31,12 +36,12 @@
                     [(identifier-sequence id ...) (datum->syntax stx #'identifier-sequence)]
                     [step (length (syntax->datum #'(id ...)))]
                     [(offset ...) (datum->syntax stx (range (syntax->datum #'step)))]
-                    [(_ comp1 "=" comp2) (datum->syntax stx #'termination-clause)]
+                    [termination_clause (datum->syntax stx #'termination-clause)]
                     [(_ read-clause ...) (datum->syntax stx #'read-sequence)])
        #'(λ (input-list) (for/fold ([l input-list])
                                    ([index (range 0 (- (length input-list) step) step)])
                            #:break (let-values ([(id ...) (values (list-ref l (+ index offset)) ...)])
-                                     (= comp1 comp2))
+                                     termination_clause)
                            (let-values ([(id ...) (values (list-ref l (+ index offset)) ...)])
                              (begin
                                (process-read l read-clause) ...
