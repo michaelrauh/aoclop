@@ -1,9 +1,10 @@
-#lang br/quicklang
-
-(define-syntax-rule (program subprogram)
-  subprogram)
+#lang racket
+(require (for-syntax racket/list))
 
 (define-syntax (statement stx)
-  #`(let ([op 3]) #,(car (cdr (syntax->datum stx)))))
+  (syntax-case stx ()
+    [(_ operation)
+     (with-syntax ([(op ...) (datum->syntax stx (range 3))])
+       #''((+ 1 op) ...))]))
+(statement (+ 1 op))
 
-(program (statement (+ 1 op)))
