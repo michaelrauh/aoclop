@@ -20,5 +20,5 @@
         (tape-read 4 temptwo)
         (assignment
          operation
-         (case op (hashmap 1 (operator "+") 2 (operator "*")))))
+         (case-select op (hashmap 1 (operator "+") 2 (operator "*")))))
        (statement (pointer-assignment foo temp)))))))

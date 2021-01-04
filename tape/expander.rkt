@@ -54,12 +54,32 @@
                                (substatement l))))))]))
 (provide loop)
 
+(define-syntax-rule (case-select to-find hashmap)
+  (hash-ref hashmap to-find))
+(provide case-select)
+
+(define-syntax-rule (hashmap entry ...)
+  (hash entry ...))
+(provide hashmap)
+
+(define-syntax (operator stx)
+  (syntax-case stx ()
+    [(_ "+") #'+]
+    [(_ "*") #'*]))
+
 (tape-program
  (read 2 (delimiter "comma"))
  (statement-sequence
+  (statement (pointer-assignment 1 12))
+  (statement (pointer-assignment 2 2))
   (statement
    (loop
-    (identifier-sequence bar op foo)
+    (identifier-sequence op foo bar baz)
     (termination-clause op "=" 99)
-    (read-sequence (tape-read 2 temp) (tape-read 4 temptwo) (assignment thing 5))
-    (statement (pointer-assignment temp op))))))
+    (read-sequence
+     (tape-read 2 temp)
+     (tape-read 4 temptwo)
+     (assignment
+      operation
+      (case-select op (hashmap 1 (operator "+") 2 (operator "*")))))
+    (statement (pointer-assignment foo temp))))))
