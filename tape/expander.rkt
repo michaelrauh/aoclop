@@ -9,9 +9,11 @@
 (require (for-syntax racket/list racket/syntax racket/match))
 
 (define-syntax-rule (tape-program read (statement-sequence (statement substatement) ...))
-  (for/fold ([l read])
-            ([transform (list substatement ...)])
-    (transform l)))
+  (begin
+    (list-ref 
+     (for/fold ([l read])
+               ([transform (list substatement ...)])
+       (transform l)) 0)))
 (provide tape-program)
 
 (define (pointer-assignment target-pos new-val)
@@ -66,20 +68,8 @@
   (syntax-case stx ()
     [(_ "+") #'+]
     [(_ "*") #'*]))
+(provide operator)
 
-(tape-program
- (read 2 (delimiter "comma"))
- (statement-sequence
-  (statement (pointer-assignment 1 12))
-  (statement (pointer-assignment 2 2))
-  (statement
-   (loop
-    (identifier-sequence op foo bar baz)
-    (termination-clause op "=" 99)
-    (read-sequence
-     (tape-read 2 temp)
-     (tape-read 4 temptwo)
-     (assignment
-      operation
-      (case-select op (hashmap 1 (operator "+") 2 (operator "*")))))
-    (statement (pointer-assignment foo temp))))))
+(define-syntax-rule (evaluation x op y)
+  (op x y))
+(provide evaluation)

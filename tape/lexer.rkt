@@ -15,6 +15,7 @@
    ["," (token 'COMMA lexeme)]
    ["in" (token 'IN lexeme)]
    ["match" (token 'MATCH lexeme)]
+   ["evaluate" (token 'EVALUATE lexeme)]
    [operators (token 'OPERATOR lexeme)]
    ["->" (token 'RIGHT-SKINNY-ARROW lexeme)]
    ["<=" (token 'LEFT-FAT-ARROW lexeme)]
