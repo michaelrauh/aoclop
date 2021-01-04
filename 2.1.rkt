@@ -2,10 +2,10 @@
 read: 2 comma
 1 <- 12
 2 <- 2
-op foo bar baz <= iterate until op = 99
-  2 -> temp
-  4 -> temptwo
-  thing <= 7
-  otherthing <= temptwo
-  foo <- otherthing
+op pointerOne pointerTwo destination <= iterate until op = 99
+    operation <= match op in {1: +, 2: *}
+    pointerOne -> p1
+    pointerTwo -> p2
+    result <= evaluate p1 operation p2 
+    destination <- result
 end
