@@ -8,6 +8,9 @@ loop                : identifier-sequence /LEFT-FAT-ARROW /ITERATE termination-c
 statement           : pointer-assignment | loop
 read-sequence       : (tape-read | assignment)*
 tape-read           : (INTEGER | IDENTIFIER) /RIGHT-SKINNY-ARROW IDENTIFIER
-assignment          : IDENTIFIER /LEFT-FAT-ARROW (INTEGER | IDENTIFIER)
+assignment          : IDENTIFIER /LEFT-FAT-ARROW (INTEGER | IDENTIFIER | case)
+case                : /MATCH IDENTIFIER /IN hashmap
+hashmap             : /LEFT-BRACKET (INTEGER /COLON operator /COMMA?)* /RIGHT-BRACKET
+operator            : OPERATOR
 identifier-sequence : IDENTIFIER+
 termination-clause  : /UNTIL IDENTIFIER BOOLEAN-DYAD INTEGER

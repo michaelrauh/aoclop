@@ -6,7 +6,7 @@
 
 (check-equal?
  (parse-to-datum
-  (apply-tokenizer-maker make-tokenizer "read: 2 comma 1 <- 12 2 <- 2 op foo bar baz <= iterate until op = 99 2 -> temp 4 -> temptwo foo <- temp end")) '(tape-program
+  (apply-tokenizer-maker make-tokenizer "read: 2 comma 1 <- 12 2 <- 2 op foo bar baz <= iterate until op = 99 2 -> temp 4 -> temptwo operation <= match op in {1: +, 2: *} foo <- temp end")) '(tape-program
     (read 2 (delimiter "comma"))
     (statement-sequence
      (statement (pointer-assignment 1 12))
@@ -15,5 +15,10 @@
       (loop
        (identifier-sequence op foo bar baz)
        (termination-clause op "=" 99)
-       (read-sequence (tape-read 2 temp) (tape-read 4 temptwo))
+       (read-sequence
+        (tape-read 2 temp)
+        (tape-read 4 temptwo)
+        (assignment
+         operation
+         (case op (hashmap 1 (operator "+") 2 (operator "*")))))
        (statement (pointer-assignment foo temp)))))))
