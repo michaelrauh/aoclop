@@ -18,11 +18,16 @@
   (λ (l) (lens-set (list-ref-lens target-pos) l new-val)))
 (provide pointer-assignment)
 
-(define (trace target-pos new-val)
-  (λ (l) (begin (displayln target-pos) (displayln new-val))))
+(define-syntax-rule (process-read l (delegate first second))
+  (delegate l first second))
 
-(define-syntax-rule (process-read l (tape-read index target))
+(define-syntax-rule (assignment l target value)
+  (define target value))
+(provide assignment)
+
+(define-syntax-rule (tape-read l index target)
   (define target (list-ref l index)))
+(provide tape-read)
 
 (define-syntax (termination-clause stx)
   (syntax-case stx ()
@@ -56,5 +61,5 @@
    (loop
     (identifier-sequence bar op foo)
     (termination-clause op "=" 99)
-    (read-sequence (tape-read 2 temp) (tape-read 4 temptwo))
+    (read-sequence (tape-read 2 temp) (tape-read 4 temptwo) (assignment thing 5))
     (statement (pointer-assignment temp op))))))

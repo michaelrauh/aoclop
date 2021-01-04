@@ -5,5 +5,7 @@ read: 2 comma
 op foo bar baz <= iterate until op = 99
   2 -> temp
   4 -> temptwo
-  foo <- temp
+  thing <= 7
+  otherthing <= temptwo
+  foo <- otherthing
 end

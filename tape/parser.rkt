@@ -6,7 +6,8 @@ delimiter           : DELIMITER
 pointer-assignment  : (INTEGER | IDENTIFIER) /LEFT-SKINNY-ARROW (INTEGER | IDENTIFIER)
 loop                : identifier-sequence /LEFT-FAT-ARROW /ITERATE termination-clause read-sequence statement /END
 statement           : pointer-assignment | loop
-read-sequence       : tape-read*
+read-sequence       : (tape-read | assignment)*
 tape-read           : (INTEGER | IDENTIFIER) /RIGHT-SKINNY-ARROW IDENTIFIER
+assignment          : IDENTIFIER /LEFT-FAT-ARROW (INTEGER | IDENTIFIER)
 identifier-sequence : IDENTIFIER+
 termination-clause  : /UNTIL IDENTIFIER BOOLEAN-DYAD INTEGER
