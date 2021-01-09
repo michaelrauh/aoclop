@@ -8,12 +8,22 @@
 (require lens)
 (require (for-syntax racket/list racket/syntax racket/match))
 
-(define-syntax-rule (tape-program read (statement-sequence (statement substatement) ...))
-  (begin
-    (list-ref 
-     (for/fold ([l read])
-               ([transform (list substatement ...)])
-       (transform l)) 0)))
+(define-syntax (tape-program stx)
+  (syntax-case stx ()
+    [(_ read (statement-sequence (statement substatement) ...))
+     #'(begin
+         (list-ref 
+          (for/fold ([l read])
+                    ([transform (list substatement ...)])
+            (transform l)) 0))]
+    [(_ (input arg ...) read (statement-sequence (statement substatement) ...))
+     #'(begin (define tape (λ (arg ...)
+                             (begin
+                               (list-ref 
+                                (for/fold ([l read])
+                                          ([transform (list substatement ...)])
+                                  (transform l)) 0))))
+              (provide tape))]))
 (provide tape-program)
 
 (define (pointer-assignment target-pos new-val)
