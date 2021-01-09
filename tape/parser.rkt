@@ -1,5 +1,6 @@
 #lang brag
-tape-program        : read statement-sequence
+tape-program        : input? read statement-sequence
+input               : /INPUT /COLON IDENTIFIER* /END
 statement-sequence  : statement*
 read                : /READ INTEGER delimiter
 delimiter           : DELIMITER

@@ -8,6 +8,7 @@
   (lexer-srcloc
    ["read:" (token 'READ lexeme)]
    ["comma" (token 'DELIMITER lexeme)]
+   ["input" (token 'INPUT lexeme)]
    ["<-" (token 'LEFT-SKINNY-ARROW lexeme)]
    ["{" (token 'LEFT-BRACKET lexeme)]
    ["}" (token 'RIGHT-BRACKET lexeme)]
