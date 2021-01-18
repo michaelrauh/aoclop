@@ -1,5 +1,5 @@
 #lang brag
-search-program      : find-block? satisfying-block? return-block?
+search-program      : find-block? satisfying-block? return-block
 operator            : OPERATOR
 find-block          : /FIND /COLON assignment-sequence /END
 assignment-sequence : assignment*
