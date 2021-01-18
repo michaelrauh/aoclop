@@ -1,18 +1,13 @@
 #lang brag
-tape-program        : input? read statement-sequence
-input               : /INPUT /COLON IDENTIFIER* /END
-statement-sequence  : statement*
-read                : /READ INTEGER delimiter
-delimiter           : DELIMITER
-pointer-assignment  : (INTEGER | IDENTIFIER) /LEFT-SKINNY-ARROW (INTEGER | IDENTIFIER)
-loop                : identifier-sequence /LEFT-FAT-ARROW /ITERATE termination-clause read-sequence statement /END
-statement           : pointer-assignment | loop
-read-sequence       : (tape-read | assignment)*
-tape-read           : (INTEGER | IDENTIFIER) /RIGHT-SKINNY-ARROW IDENTIFIER
-assignment          : IDENTIFIER /LEFT-FAT-ARROW (INTEGER | IDENTIFIER | case-select | evaluation)
-evaluation          : /EVALUATE (INTEGER | IDENTIFIER) (operator | IDENTIFIER) (INTEGER | IDENTIFIER)
-case-select         : /MATCH IDENTIFIER /IN hashmap
-hashmap             : /LEFT-BRACKET (INTEGER /COLON operator /COMMA?)* /RIGHT-BRACKET
+search-program      : find-block? satisfying-block? return-block?
 operator            : OPERATOR
-identifier-sequence : IDENTIFIER+
-termination-clause  : /UNTIL IDENTIFIER BOOLEAN-DYAD INTEGER
+find-block          : /FIND /COLON assignment-sequence /END
+assignment-sequence : assignment*
+assignment          : IDENTIFIER /IN range-expr
+range-expr          : INTEGER /RIGHT-SKINNY-ARROW INTEGER
+return-block        : /RETURN /COLON expression /END
+expression          : (expression | INTEGER | IDENTIFIER) OPERATOR (INTEGER | IDENTIFIER)
+satisfying-block    : /SATISFYING /COLON /FOREIGN function-call /IN IDENTIFIER /EQUALS INTEGER /END
+function-call       : IDENTIFIER /OPEN-PAREN IDENTIFIER /COMMA IDENTIFIER /CLOSE-PAREN
+
+
