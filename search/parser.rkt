@@ -6,7 +6,7 @@ assignment-sequence : assignment*
 assignment          : IDENTIFIER /IN range-expr
 range-expr          : INTEGER /RIGHT-SKINNY-ARROW INTEGER
 return-block        : /RETURN /COLON expression /END
-expression          : (expression | INTEGER | IDENTIFIER) OPERATOR (INTEGER | IDENTIFIER)
+expression          : (expression | INTEGER | IDENTIFIER) operator (INTEGER | IDENTIFIER)
 satisfying-block    : /SATISFYING /COLON /FOREIGN function-call /IN IDENTIFIER /EQUALS INTEGER /END
 function-call       : IDENTIFIER /OPEN-PAREN IDENTIFIER /COMMA IDENTIFIER /CLOSE-PAREN
 
