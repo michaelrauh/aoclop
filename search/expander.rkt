@@ -9,7 +9,8 @@
      (with-syntax* ([(_ (_ (_ ident search-space) ...)) #'find-block]
                     [(satisfying-block call import target) #'satisfying-block]
                     [new-call (datum->syntax stx #'call)]
-                    [import (datum->syntax stx #'(import-file import))])
+                    [(_ func _ _) #'new-call]
+                    [import (datum->syntax stx #'(import-file import func))])
        #'(begin
            import
            (for*/first ([ident search-space] ...
@@ -23,40 +24,24 @@
 
 (define-syntax (import-file stx)
   (syntax-case stx ()
-    [(_ str) (with-syntax (
+    [(_ str func) (with-syntax (
                     [filename (datum->syntax stx (string-replace (symbol->string (syntax->datum #'str)) "file_" ""))])
-       #'(require filename))]))
+       #'(require (rename-in filename (func func))))]))
 
 (define-syntax-rule (return-block expression)
   expression)
+(provide return-block)
 
 (define-syntax-rule (expression lhs operation rhs)
   (operation lhs rhs))
+(provide expression)
 
 (define-syntax (operator stx)
   (syntax-case stx ()
     [(_ "+") #'+]
     [(_ "*") #'*]))
-
+(provide operator)
 
 (define-syntax-rule (function-call func first second)
   (func first second))
 (provide function-call)
-
-;(search-program
-;    (find-block
-;     (assignment-sequence
-;      (assignment noun (range-expr 0 100))
-;      (assignment verb (range-expr 0 100))))
-;    (satisfying-block (function-call tape noun verb) file_2.2_tape.rkt 19690720)
-;    (return-block
-;     (expression (expression noun (operator "*") 100) (operator "+") verb)))
-
-;(define-syntax-rule (foo)
-;  (begin
-;    (require "2.2_tape.rkt")
-;    (tape 1 2)))
-;(foo)
-
-(import-file file_2.2_tape.rkt)
-tape
