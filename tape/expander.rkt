@@ -10,13 +10,14 @@
 
 (define-syntax (tape-program stx)
   (syntax-parse stx
-    [(_ read (_ (_ substatement) ...))
+    #:datum-literals (tape-program input statement-sequence statement)
+    [(tape-program read:expr (statement-sequence (statement substatement:expr) ...))
      #'(begin
          (list-ref 
           (for/fold ([l read])
                     ([transform (list substatement ...)])
             (transform l)) 0))]
-    [(_ (_ arg ...) read (_ (_ substatement) ...))
+    [(tape-program (input arg ...) read:expr (statement-sequence (statement substatement:expr) ...))
      #'(begin (define tape (λ (arg ...)
                              (begin
                                (list-ref 
