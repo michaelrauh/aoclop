@@ -6,17 +6,18 @@
 (provide read)
 (provide delimiter)
 (require lens)
-(require (for-syntax racket/list racket/syntax racket/match))
+(require (for-syntax racket/list racket/syntax syntax/parse))
 
 (define-syntax (tape-program stx)
-  (syntax-case stx ()
-    [(_ read (statement-sequence (statement substatement) ...))
+  (syntax-parse stx
+    #:datum-literals (tape-program input statement-sequence statement)
+    [(tape-program read:expr (statement-sequence (statement substatement:expr) ...))
      #'(begin
          (list-ref 
           (for/fold ([l read])
                     ([transform (list substatement ...)])
             (transform l)) 0))]
-    [(_ (input arg ...) read (statement-sequence (statement substatement) ...))
+    [(tape-program (input arg ...) read:expr (statement-sequence (statement substatement:expr) ...))
      #'(begin (define tape (λ (arg ...)
                              (begin
                                (list-ref 
@@ -48,22 +49,24 @@
 (provide termination-clause)
 
 (define-syntax (loop stx)
-  (syntax-case stx ()
-    [(_ identifier-sequence termination-clause read-sequence (statement substatement))
-     (with-syntax* (
-                    [(identifier-sequence id ...) (datum->syntax stx #'identifier-sequence)]
-                    [step (length (syntax->datum #'(id ...)))]
-                    [(offset ...) (datum->syntax stx (range (syntax->datum #'step)))]
-                    [termination_clause (datum->syntax stx #'termination-clause)]
-                    [(_ read-clause ...) (datum->syntax stx #'read-sequence)])
+  (define-syntax-class id-seq
+    #:description "a sequence of identifiers"
+    #:datum-literals (identifier-sequence)
+    (pattern (identifier-sequence id ...)
+             #:with step (datum->syntax stx (length (syntax->datum #'(id ...))))
+             #:with (offset ...) (datum->syntax stx (range (syntax->datum #'step)))))
+  
+  (syntax-parse stx
+    #:datum-literals (statement read-sequence)
+    [(_ identifier-sequence:id-seq termination-clause:expr (read-sequence read-clause:expr ...) (statement substatement:expr))
        #'(λ (input-list) (for/fold ([l input-list])
-                                   ([index (range 0 (- (length input-list) step) step)])
-                           #:break (let-values ([(id ...) (values (list-ref l (+ index offset)) ...)])
-                                     termination_clause)
-                           (let-values ([(id ...) (values (list-ref l (+ index offset)) ...)])
+                                   ([index (range 0 (- (length input-list) identifier-sequence.step) identifier-sequence.step)])
+                           #:break (let-values ([(identifier-sequence.id ...) (values (list-ref l (+ index identifier-sequence.offset)) ...)])
+                                     termination-clause)
+                           (let-values ([(identifier-sequence.id ...) (values (list-ref l (+ index identifier-sequence.offset)) ...)])
                              (begin
                                (process-read l read-clause) ...
-                               (substatement l))))))]))
+                               (substatement l)))))]))
 (provide loop)
 
 (define-syntax-rule (case-select to-find hashmap)
