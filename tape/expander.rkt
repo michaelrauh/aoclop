@@ -6,7 +6,7 @@
 (provide read)
 (provide delimiter)
 (require lens)
-(require (for-syntax racket/list racket/syntax syntax/parse))
+(require (for-syntax racket/list syntax/parse))
 
 (define-syntax (tape-program stx)
   (syntax-parse stx

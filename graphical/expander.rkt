@@ -8,34 +8,76 @@
 
 (require(for-syntax syntax/parse))
 
-(define (converge proc x)
-  (define step (proc x))
-  (cond [(<= step 0) 0]
-        [else (+ step (converge proc step))]))
+(define-syntax-rule (graphical-program (expression-sequence expr ...))
+  (expr ...))
 
-(define-syntax-rule (mappetizer-program read scope-block collect)
-  (apply collect (read-scope scope-block read)))
-(provide mappetizer-program)
+(define-syntax-rule (expression subexpr)
+  subexpr)
 
-(define-syntax (read-scope stx)
+(define-for-syntax (process-split stx)
+  stx)
+
+(define-syntax (loop stx)
+  (define-syntax-class expr-seq
+    #:description "a sequence of expressions"
+    #:datum-literals (expression-sequence)
+    (pattern (expression-sequence expr:expr ...)))
+  
+  (define-syntax-class bind-set
+    #:description "bindings for a loop"
+    #:datum-literals (binding-set)
+    (pattern (binding-set ids ... expr:expr)
+    #:with step (datum->syntax stx (length (syntax->datum #'(ids ...))))
+    #:with (split-expr ...) (process-split #'(expr step))))
+  ; todo write some plain racket that splits data in the fashion desired.
   (syntax-parse stx
-    #:datum-literals (read-scope scope-block converge-block)
-    [(read-scope (scope-block (converge-block all-ops:expr)) read:expr) #'(map ((curry converge) all-ops) read)]
-    [(read-scope (scope-block all-ops:expr) read:expr) #'(map all-ops read)]))
+    [(_ bindings:bind-set exp-seq:expr-seq)
+     #''(bindings.split-expr ...)]))
 
-(define-syntax-rule (all-ops op ...)
-  (λ~> op ...))
-(provide all-ops)
-
-(define-syntax (op stx)
+(define-syntax (graph-expression stx)
   (syntax-parse stx
-    #:datum-literals (op)
-    [(op x "identity") #'(identity x)]
-    [(op x "floor") #'(floor x)]
-    [(op x "/" divisor:number) #'(/ x divisor)]
-    [(op x "-" difference:number) #'(- x difference)]))
-(provide op)
+    [(_ foo ...)
+     #'7]))
 
-(define-syntax-rule (collect "sum") +)
-(provide collect)
-
+(graphical-program
+    (expression-sequence
+     (expression
+      (loop
+       (binding-set
+        (identifier-sequence wire)
+        (expression (read 3 (delimiter "newline"))))
+       (expression-sequence
+        (expression (graph-expression (function-call changecolor)))
+        (expression
+         (loop
+          (binding-set
+           (identifier-sequence direction magnitude)
+           (expression (split-expression wire "comma")))
+          (expression-sequence
+           (expression
+            (assignment
+             upmultiplier
+             (expression (case-select direction (hashmap U 1 D -1 other 0)))))
+           (expression
+            (assignment
+             leftmultiplier
+             (expression (case-select direction (hashmap L 1 R -1 other 0)))))
+           (expression
+            (graph-expression
+             (function-call
+              add
+              (expression
+               (calculation
+                (expression upmultiplier)
+                (operator "*")
+                (expression magnitude)))
+              (expression
+               (calculation
+                (expression rightmultiplier)
+                (operator "*")
+                (expression magnitude))))))))))))
+     (expression
+      (graph-expression
+       (function-call intersects)
+       (function-call magnitudes)
+       (function-call minimum)))))

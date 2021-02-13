@@ -20,14 +20,16 @@ graph.intersects().magnitudes().minimum()")) '(graphical-program
     (expression-sequence
      (expression
       (loop
-       (identifier-sequence wire)
-       (expression (read 3 (delimiter "newline")))
+       (binding-set
+        (identifier-sequence wire)
+        (expression (read 3 (delimiter "newline"))))
        (expression-sequence
         (expression (graph-expression (function-call changecolor)))
         (expression
          (loop
-          (identifier-sequence direction magnitude)
-          (expression (split-expression wire "comma"))
+          (binding-set
+           (identifier-sequence direction magnitude)
+           (expression (split-expression wire "comma")))
           (expression-sequence
            (expression
             (assignment
@@ -44,12 +46,12 @@ graph.intersects().magnitudes().minimum()")) '(graphical-program
               (expression
                (calculation
                 (expression upmultiplier)
-                "*"
+                (operator "*")
                 (expression magnitude)))
               (expression
                (calculation
                 (expression rightmultiplier)
-                "*"
+                (operator "*")
                 (expression magnitude))))))))))))
      (expression
       (graph-expression
