@@ -35,3 +35,13 @@
 
 (binding-set (identifier-sequence wire two other) (expression "abcd"))
 (binding-set (identifier-sequence three) (expression "abcd"))
+
+;> wire
+;"a"
+;> two
+;"b"
+;> other 
+;"cd"
+;> three
+;"abcd"
+;> 
