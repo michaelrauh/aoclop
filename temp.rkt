@@ -9,39 +9,10 @@
 (provide read)
 (require (for-syntax racket/list syntax/parse))
 
-;(define-syntax (delimiter stx)
-;  (syntax-case stx ()
-;    [(delimiter "newline") #'"\n"]
-;    [(delimiter "comma") #'","]))
-;(provide delimiter)
-
-;(define data (read 3 "\n"))
-;(for ([big-string data])
-;  (for ([obj (string-split big-string ",")])
-;    (begin
-;      (displayln (substring obj 0 1))
-;    (displayln (substring obj 1)))))
-
 ; issues:
-; 1. for the last substring, don't include the end of the interval.
-; 2. If it is an integer it has to be cast to that. There is no syntax for that.
-; 3. The current read method assumes integers and this prompt requires strings.
-; 4. Helpers work and are shown below.
-; 5. long term concern - is it OK for the semantics of this langs read method to be string based? Or does there need to be syntax for that?
-
-;(define-syntax (test stx)
-;  (syntax-parse stx
-;    [(_ body ...)
-;     (process-body 
-;      stx)]))
-
-;(define-for-syntax (process-body stx)
-;  (syntax-parse stx
-;    [(_ foo ...) #'(display foo ...)]))
-
-  ;(test (+ 1 2))
-
-;(binding-set (identifier-sequence wire) (expression (list 1 2 3 4 5)))
+; 1. If it is an integer it has to be cast to that. There is no syntax for that.
+; 2. The current read method assumes integers and this prompt requires strings.
+; 3. long term concern - is it OK for the semantics of this langs read method to be string based? Or does there need to be syntax for that?
 
 
 (define-syntax (binding-set stx)
