@@ -15,7 +15,7 @@
 ; 3. long term concern - is it OK for the semantics of this langs read method to be string based? Or does there need to be syntax for that?
 
 
-(define-syntax (binding-set stx)
+(define-syntax (loop stx)
   (define-syntax-class many-idents
     #:datum-literals (identifier-sequence)
     (pattern (_ ident ... ident-l)
@@ -26,9 +26,9 @@
     (pattern (expression expr)))
   
   (syntax-parse stx
-    [(_ id-seq:many-idents gen-expr:gen-data)
+    #:datum-literals (binding-set expression)
+    [(_ (binding-set id-seq:many-idents gen-expr:gen-data) (expression subexpr))
      #'(for ([id-seq.ident (list (substring gen-expr.expr id-seq.offset (+ 1 id-seq.offset)))] ... [id-seq.ident-l (list (substring gen-expr.expr id-seq.step))])
-         (displayln (list id-seq.ident ... id-seq.ident-l)))]))
+         (displayln subexpr))]))
 
-(binding-set (identifier-sequence one two three) (expression "abcd"))
-(binding-set (identifier-sequence four) (expression "abcd"))
+(loop (binding-set (identifier-sequence one two three) (expression "abcd")) (expression (string-append two one three)))
