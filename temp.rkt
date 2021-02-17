@@ -27,8 +27,8 @@
   
   (syntax-parse stx
     #:datum-literals (binding-set expression)
-    [(_ (binding-set id-seq:many-idents gen-expr:gen-data) (expression subexpr))
+    [(_ (binding-set id-seq:many-idents gen-expr:gen-data) (expression subexpr ...))
      #'(for ([id-seq.ident (list (substring gen-expr.expr id-seq.offset (+ 1 id-seq.offset)))] ... [id-seq.ident-l (list (substring gen-expr.expr id-seq.step))])
-         (displayln subexpr))]))
+         (displayln subexpr ...))]))
 
 (loop (binding-set (identifier-sequence one two three) (expression "abcd")) (expression (string-append two one three)))
