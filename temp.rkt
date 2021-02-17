@@ -27,7 +27,8 @@
   
   (syntax-parse stx
     [(_ id-seq:many-idents gen-expr:gen-data)
-     #'(begin (define id-seq.ident (substring gen-expr.expr id-seq.offset (+ 1 id-seq.offset))) ... (define id-seq.ident-l (substring gen-expr.expr id-seq.step)))]))
+     #'(for ([id-seq.ident (list (substring gen-expr.expr id-seq.offset (+ 1 id-seq.offset)))] ... [id-seq.ident-l (list (substring gen-expr.expr id-seq.step))])
+         (displayln (list id-seq.ident ... id-seq.ident-l)))]))
 
 (binding-set (identifier-sequence one two three) (expression "abcd"))
 (binding-set (identifier-sequence four) (expression "abcd"))
