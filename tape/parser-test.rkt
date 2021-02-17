@@ -15,15 +15,8 @@
     (statement
      (loop
       (identifier-sequence op foo bar baz)
-      (termination-clause op "=" 99)
-      (read-sequence
-       (tape-read 2 temp)
-       (tape-read 4 temptwo)
-       (assignment
-        operation
-        (case-select op (hashmap 1 (operator "+") 2 (operator "*"))))
-       (assignment result (evaluation p1 operation p2)))
-      (statement (pointer-assignment foo temp)))))))
+      (source-expr (list 1 2 3 4 5 6 7 8))
+      (statement (display op foo bar baz)))))))
 
 (check-equal?
  (parse-to-datum

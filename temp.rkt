@@ -33,15 +33,5 @@
     [(_ id-seq:many-idents gen-expr:gen-data)
      #'(begin (define id-seq.ident (substring gen-expr.expr id-seq.offset (+ 1 id-seq.offset))) ... (define id-seq.ident-l (substring gen-expr.expr id-seq.step)))]))
 
-(binding-set (identifier-sequence wire two other) (expression "abcd"))
-(binding-set (identifier-sequence three) (expression "abcd"))
-
-;> wire
-;"a"
-;> two
-;"b"
-;> other 
-;"cd"
-;> three
-;"abcd"
-;> 
+(binding-set (identifier-sequence one two three) (expression "abcd"))
+(binding-set (identifier-sequence four) (expression "abcd"))

@@ -3,7 +3,7 @@
 (provide #%module-begin)
 (require threading)
 (require "../util.rkt")
-(provide read)
+(provide (rename-out [read-string read]))
 (provide delimiter)
 
 (require(for-syntax syntax/parse))
@@ -29,15 +29,16 @@
     (pattern (binding-set ids ... expr:expr)
     #:with step (datum->syntax stx (length (syntax->datum #'(ids ...))))
     #:with (split-expr ...) (process-split #'(expr step))))
-  ; todo write some plain racket that splits data in the fashion desired.
+  
   (syntax-parse stx
     [(_ bindings:bind-set exp-seq:expr-seq)
-     #''(bindings.split-expr ...)]))
+     #'5]))
 
 (define-syntax (graph-expression stx)
   (syntax-parse stx
     [(_ foo ...)
      #'7]))
+
 
 (graphical-program
     (expression-sequence
