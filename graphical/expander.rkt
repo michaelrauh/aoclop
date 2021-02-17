@@ -6,7 +6,7 @@
 (provide (rename-out [read-string read]))
 (provide delimiter)
 
-(require(for-syntax syntax/parse))
+(require(for-syntax syntax/parse racket/list))
 
 (define-syntax-rule (graphical-program (expression-sequence expr ...))
   (expr ...))
@@ -18,21 +18,20 @@
   stx)
 
 (define-syntax (loop stx)
-  (define-syntax-class expr-seq
-    #:description "a sequence of expressions"
-    #:datum-literals (expression-sequence)
-    (pattern (expression-sequence expr:expr ...)))
-  
-  (define-syntax-class bind-set
-    #:description "bindings for a loop"
-    #:datum-literals (binding-set)
-    (pattern (binding-set ids ... expr:expr)
-    #:with step (datum->syntax stx (length (syntax->datum #'(ids ...))))
-    #:with (split-expr ...) (process-split #'(expr step))))
+  (define-syntax-class many-idents
+    #:datum-literals (identifier-sequence)
+    (pattern (_ ident ... ident-l)
+             #:with step (datum->syntax stx (length (syntax->datum #'(ident ...))))
+             #:with (offset ...) (datum->syntax stx (range (syntax->datum #'step)))))
+  (define-syntax-class gen-data
+    #:datum-literals (expression)
+    (pattern (expression expr)))
   
   (syntax-parse stx
-    [(_ bindings:bind-set exp-seq:expr-seq)
-     #'5]))
+    #:datum-literals (binding-set expression-sequence)
+    [(_ (binding-set id-seq:many-idents gen-expr:gen-data) (expression subexpr ...))
+     #'(for ([id-seq.ident (list (substring gen-expr.expr id-seq.offset (+ 1 id-seq.offset)))] ... [id-seq.ident-l (list (substring gen-expr.expr id-seq.step))])
+         subexpr ...)]))
 
 (define-syntax (graph-expression stx)
   (syntax-parse stx
