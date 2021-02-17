@@ -16,9 +16,6 @@
 
 
 (define-syntax (binding-set stx)
-  (define-syntax-class one-ident
-    #:datum-literals (identifier-sequence)
-    (pattern (_ ident)))
   (define-syntax-class many-idents
     #:datum-literals (identifier-sequence)
     (pattern (_ ident ... ident-l)
@@ -27,9 +24,8 @@
   (define-syntax-class gen-data
     #:datum-literals (expression)
     (pattern (expression expr)))
+  
   (syntax-parse stx
-    [(_ id-seq:one-ident gen-expr:gen-data)
-     #'(define id-seq.ident gen-expr.expr)]
     [(_ id-seq:many-idents gen-expr:gen-data)
      #'(begin (define id-seq.ident (substring gen-expr.expr id-seq.offset (+ 1 id-seq.offset))) ... (define id-seq.ident-l (substring gen-expr.expr id-seq.step)))]))
 
