@@ -47,8 +47,11 @@
 (define-syntax-rule (case-select to-find (hashmap entry ...) (default default-value))
   (hash-ref (hash entry ...) to-find default-value))
 
-(define-syntax-rule (graph-expression (function-call subcall))
-  (send graph subcall))
+(define-syntax (graph-expression stx)
+  (syntax-parse stx
+    #:datum-literals (graph-expression function-call)
+    [(graph-expression (function-call subcall))
+     #'(send graph subcall)]))
 
 (graphical-program
     (expression-sequence
