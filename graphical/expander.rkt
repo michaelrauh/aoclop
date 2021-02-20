@@ -3,9 +3,13 @@
 (provide #%module-begin)
 
 (require "../util.rkt")
+(require "../temp.rkt")
 (require threading)
 (provide read-string)
 (provide delimiter)
+
+
+(define graph (new graph%))
 
 (require(for-syntax syntax/parse racket/list))
 
@@ -34,11 +38,6 @@
          (let ([id-seq.ident (substring iter id-seq.offset (+ 1 id-seq.offset))] ... [id-seq.ident-l (substring iter id-seq.step)])
          subexpr ...))]))
 
-(define-syntax (graph-expression stx)
-  (syntax-parse stx
-    [(_ foo ...)
-     #'7]))
-
 (define (split-expression contents delim)
   (string-split contents delim))
 
@@ -47,6 +46,9 @@
 
 (define-syntax-rule (case-select to-find (hashmap entry ...) (default default-value))
   (hash-ref (hash entry ...) to-find default-value))
+
+(define-syntax-rule (graph-expression (function-call subcall))
+  (send graph subcall))
 
 (graphical-program
     (expression-sequence

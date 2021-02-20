@@ -1,6 +1,7 @@
 #lang racket
 
 (struct point (x y) #:transparent)
+(provide graph%)
 
 (define graph%
   (class object%
