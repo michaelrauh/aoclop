@@ -19,20 +19,22 @@
       (hash-set! positions current-color (cons current-position (hash-ref positions current-color))))
 
     (define/public (intersects)
+      
       (define (help pos)
         (hash-ref positions pos))
 
-      (define (f l)
-        (not (equal? l (list origin))))
+      (define (not-origin? p)
+    (not (equal? p (point 0 0))))
 
-      (define poses (map help (range current-color)))
-      (define possibles (filter f poses))
-      (define intersections (apply set-intersect possibles))
-      (define ans (new intersects% [intersections intersections]))  
-      ans)
+      (define (filter-list-origin l)
+    (filter not-origin? l))
 
-    (define/public (get-positions)
-      positions)))
+      (define poses (map help (range (+ 1 current-color))))
+      (define possibles (map filter-list-origin poses))
+      (define nonempty-possibles (filter (λ (l) (not (null? l))) possibles))
+      (define intersections (apply set-intersect nonempty-possibles))
+      (define ans (new intersects% [intersections intersections]))
+      ans)))
 
 (define intersects%
   (class object%
@@ -43,7 +45,23 @@
       (+ (abs (point-x p)) (abs (point-y p))))
     
     (define/public (magnitudes)
-      (map magnitude ints))))
+      (define ans (map magnitude ints))
+      (new magnitudes% [magnitudes ans]))))
+
+(define magnitudes%
+  (class object%
+    (init magnitudes)
+    (super-new)
+    (define mags magnitudes)
+
+    (define (min-2 x y)
+      (if (< x y) x y))
+
+    (define (minimum-of-list l)
+      (foldl min-2 (car l) (cdr l)))
+    
+    (define/public (minimum)
+      (minimum-of-list mags))))
   
 (define current-graph (new graph%))
 (send current-graph changecolor)
@@ -54,9 +72,7 @@
 (send current-graph add 1 2)
 (send current-graph add 1 2)
 (define intersects (send current-graph intersects))
-(send intersects magnitudes)
-; graph.add(1, 2)
-; graph.changecolor()
-; graph.intersects().magnitudes().minimum()
+(define mags (send intersects magnitudes))
+(send mags minimum)
 
 
