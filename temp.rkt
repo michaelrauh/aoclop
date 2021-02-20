@@ -4,10 +4,10 @@
 
 (define graph%
   (class object%
+    (super-new)
     (define origin (point 0 0))
     (define current-color 0)
     (define positions (make-hash (list (cons current-color (list origin)))))
-    (super-new)
 
     (define/public (changecolor)
       (set! current-color (+ 1 current-color))
@@ -19,60 +19,54 @@
       (hash-set! positions current-color (cons current-position (hash-ref positions current-color))))
 
     (define/public (intersects)
-      
-      (define (help pos)
-        (hash-ref positions pos))
-
-      (define (not-origin? p)
-    (not (equal? p (point 0 0))))
-
       (define (filter-list-origin l)
-    (filter not-origin? l))
+        (filter (λ (x) (not (equal? x origin))) l))
 
-      (define poses (map help (range (+ 1 current-color))))
-      (define possibles (map filter-list-origin poses))
-      (define nonempty-possibles (filter (λ (l) (not (null? l))) possibles))
+      (define nonempty-possibles (filter (λ (l) (not (null? l)))
+                                         (map filter-list-origin
+                                              (map (λ (x) (hash-ref positions x))
+                                                   (range (+ 1 current-color))))))
       (define intersections (apply set-intersect nonempty-possibles))
-      (define ans (new intersects% [intersections intersections]))
-      ans)))
+      (new intersects% [intersections intersections]))))
 
 (define intersects%
   (class object%
+    (super-new)
     (init intersections)
     (define ints intersections)
-    (super-new)
-    (define (magnitude p)
-      (+ (abs (point-x p)) (abs (point-y p))))
     
     (define/public (magnitudes)
-      (define ans (map magnitude ints))
-      (new magnitudes% [magnitudes ans]))))
+      (new magnitudes% [magnitudes (map (λ (p)
+                                          (+ (abs (point-x p))
+                                             (abs (point-y p))))
+                                        ints)]))))
 
 (define magnitudes%
   (class object%
     (init magnitudes)
     (super-new)
     (define mags magnitudes)
-
-    (define (min-2 x y)
-      (if (< x y) x y))
-
-    (define (minimum-of-list l)
-      (foldl min-2 (car l) (cdr l)))
     
     (define/public (minimum)
-      (minimum-of-list mags))))
+      (define (min-2 x y)
+        (if (< x y) x y))
+      (foldl min-2 (car mags) (cdr mags)))))
   
-(define current-graph (new graph%))
-(send current-graph changecolor)
-(send current-graph add 1 2)
-(send current-graph add 1 2)
-(send current-graph add 1 2)
-(send current-graph changecolor)
-(send current-graph add 1 2)
-(send current-graph add 1 2)
-(define intersects (send current-graph intersects))
-(define mags (send intersects magnitudes))
-(send mags minimum)
 
+
+(module+ test
+  (require rackunit)
+  (define current-graph (new graph%))
+  (send current-graph changecolor)
+  (send current-graph add 1 2)
+  (send current-graph add 1 2)
+  (send current-graph add 1 2)
+  (send current-graph changecolor)
+  (send current-graph add 1 2)
+  (send current-graph add 1 2)
+  (define intersects (send current-graph intersects))
+  (define mags (send intersects magnitudes))
+  (define actual (send mags minimum))
+
+  (check-equal? actual 3))
 
