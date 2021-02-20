@@ -10,8 +10,8 @@
 for wire in read: 3 by newline:
   graph.changecolor()
   for direction, magnitude in wire by comma:
-    upmultiplier = match direction in {U: 1, D: -1, other: 0}
-    leftmultiplier = match direction in {L: 1, R: -1, other: 0}
+    upmultiplier = match direction in {'U': 1, 'D': -1} or 0
+    leftmultiplier = match direction in {'L': 1, 'R': -1} or 0
     graph.add(upmultiplier * magnitude, rightmultiplier * magnitude)
   end
 end
@@ -22,23 +22,25 @@ graph.intersects().magnitudes().minimum()")) '(graphical-program
       (loop
        (binding-set
         (identifier-sequence wire)
-        (expression (read 3 (delimiter "newline"))))
+        (expression (read-string 3 (delimiter "newline"))))
        (expression-sequence
         (expression (graph-expression (function-call changecolor)))
         (expression
          (loop
           (binding-set
            (identifier-sequence direction magnitude)
-           (expression (split-expression wire "comma")))
+           (expression (split-expression wire (delimiter "comma"))))
           (expression-sequence
            (expression
             (assignment
              upmultiplier
-             (expression (case-select direction (hashmap U 1 D -1 other 0)))))
+             (expression
+              (case-select direction (hashmap "U" 1 "D" -1) (default 0)))))
            (expression
             (assignment
              leftmultiplier
-             (expression (case-select direction (hashmap L 1 R -1 other 0)))))
+             (expression
+              (case-select direction (hashmap "L" 1 "R" -1) (default 0)))))
            (expression
             (graph-expression
              (function-call

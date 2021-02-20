@@ -1,34 +1,62 @@
 #lang racket
 
-(require (for-syntax syntax/parse))
-(require 2htdp/batch-io)
-(define (read file-number delim)
-  (define contents (read-file (string-append (number->string file-number) ".txt")))
-  (define strings (string-split contents delim))
-  strings)
-(provide read)
-(require (for-syntax racket/list syntax/parse))
+(struct point (x y) #:transparent)
 
-; issues:
-; 1. If it is an integer it has to be cast to that. There is no syntax for that.
-; 2. The current read method assumes integers and this prompt requires strings.
-; 3. long term concern - is it OK for the semantics of this langs read method to be string based? Or does there need to be syntax for that?
+(define graph%
+  (class object%
+    (define origin (point 0 0))
+    (define current-color 0)
+    (define positions (make-hash (list (cons current-color (list origin)))))
+    (super-new)
 
+    (define/public (changecolor)
+      (set! current-color (+ 1 current-color))
+      (hash-set! positions current-color (list origin)))
 
-(define-syntax (loop stx)
-  (define-syntax-class many-idents
-    #:datum-literals (identifier-sequence)
-    (pattern (_ ident ... ident-l)
-             #:with step (datum->syntax stx (length (syntax->datum #'(ident ...))))
-             #:with (offset ...) (datum->syntax stx (range (syntax->datum #'step)))))
-  (define-syntax-class gen-data
-    #:datum-literals (expression)
-    (pattern (expression expr)))
+    (define/public (add x y)
+      (define old-position (car (hash-ref positions current-color)))
+      (define current-position (point (+ x (point-x old-position)) (+ y (point-y old-position))))
+      (hash-set! positions current-color (cons current-position (hash-ref positions current-color))))
+
+    (define/public (intersects)
+      (define (help pos)
+        (hash-ref positions pos))
+
+      (define (f l)
+        (not (equal? l (list origin))))
+
+      (define poses (map help (range current-color)))
+      (define possibles (filter f poses))
+      (define intersections (apply set-intersect possibles))
+      (define ans (new intersects% [intersections intersections]))  
+      ans)
+
+    (define/public (get-positions)
+      positions)))
+
+(define intersects%
+  (class object%
+    (init intersections)
+    (define ints intersections)
+    (super-new)
+    (define (magnitude p)
+      (+ (abs (point-x p)) (abs (point-y p))))
+    
+    (define/public (magnitudes)
+      (map magnitude ints))))
   
-  (syntax-parse stx
-    #:datum-literals (binding-set expression)
-    [(_ (binding-set id-seq:many-idents gen-expr:gen-data) (expression subexpr ...))
-     #'(for ([id-seq.ident (list (substring gen-expr.expr id-seq.offset (+ 1 id-seq.offset)))] ... [id-seq.ident-l (list (substring gen-expr.expr id-seq.step))])
-         (displayln subexpr ...))]))
+(define current-graph (new graph%))
+(send current-graph changecolor)
+(send current-graph add 1 2)
+(send current-graph add 1 2)
+(send current-graph add 1 2)
+(send current-graph changecolor)
+(send current-graph add 1 2)
+(send current-graph add 1 2)
+(define intersects (send current-graph intersects))
+(send intersects magnitudes)
+; graph.add(1, 2)
+; graph.changecolor()
+; graph.intersects().magnitudes().minimum()
 
-(loop (binding-set (identifier-sequence one two three) (expression "abcd")) (expression (string-append two one three)))
+

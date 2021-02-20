@@ -31,6 +31,11 @@
    ["iterate" (token 'ITERATE lexeme)]
    ["end" (token 'END lexeme)]
    ["until" (token 'UNTIL lexeme)]
+   ["or" (token 'OR lexeme)]
+   [(:or (from/to "\"" "\"") (from/to "'" "'"))
+    (token 'STRING
+           (substring lexeme
+                      1 (sub1 (string-length lexeme))))]
    [(:seq alphabetic (:* (:or alphabetic numeric "$")))
     (token 'IDENTIFIER (string->symbol lexeme))]
    [digits (token 'INTEGER (string->number lexeme))]
