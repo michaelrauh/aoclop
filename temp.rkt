@@ -70,3 +70,17 @@
 
   (check-equal? actual 3))
 
+(module+ test
+  (require rackunit)
+  (define graph (new graph%))
+  (send graph changecolor)
+  (send graph add 1 2)
+  (send graph add 1 2)
+  (send graph add 1 2)
+  (send graph changecolor)
+  (send graph add 1 2)
+  (send graph add 1 2)
+  (define res (send (send (send graph intersects) magnitudes) minimum))
+
+  (check-equal? res 3))
+
