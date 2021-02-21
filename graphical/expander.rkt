@@ -51,8 +51,10 @@
   (syntax-parse stx
     #:datum-literals (graph-expression function-call)
     [(graph-expression (function-call subcall arg ...))
-     #'(send graph subcall arg ...)]
-    ))
+     #'(send graph subcall arg ...)]))
+
+(define-syntax-rule (calculation expr1 op expr2)
+  (op expr1 expr2))
 
 (graphical-program
     (expression-sequence
@@ -90,7 +92,7 @@
                 (expression magnitude)))
               (expression
                (calculation
-                (expression rightmultiplier)
+                (expression leftmultiplier)
                 (operator "*")
                 (expression magnitude))))))))))))
      (expression

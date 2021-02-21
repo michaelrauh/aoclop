@@ -19,3 +19,9 @@
     [(delimiter "comma") #'","]
     [(delimiter "newline") #'"\n"]))
 (provide delimiter)
+
+(define-syntax (operator stx)
+  (syntax-case stx ()
+    [(_ "+") #'+]
+    [(_ "*") #'*]))
+(provide operator)

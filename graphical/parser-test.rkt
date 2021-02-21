@@ -12,7 +12,7 @@ for wire in read: 3 by newline:
   for direction, magnitude in wire by comma:
     upmultiplier = match direction in {'U': 1, 'D': -1} or 0
     leftmultiplier = match direction in {'L': 1, 'R': -1} or 0
-    graph.add(upmultiplier * magnitude, rightmultiplier * magnitude)
+    graph.add(upmultiplier * magnitude, leftmultiplier * magnitude)
   end
 end
 
@@ -52,7 +52,7 @@ graph.intersects().magnitudes().minimum()")) '(graphical-program
                 (expression magnitude)))
               (expression
                (calculation
-                (expression rightmultiplier)
+                (expression leftmultiplier)
                 (operator "*")
                 (expression magnitude))))))))))))
      (expression
