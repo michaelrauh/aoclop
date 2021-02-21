@@ -51,7 +51,17 @@
   (syntax-parse stx
     #:datum-literals (graph-expression function-call)
     [(graph-expression (function-call subcall arg ...))
-     #'(send graph subcall arg ...)]))
+     #'(send graph subcall arg ...)]
+    [(graph-expression (function-call subcall arg ...) func-call ...)
+     #'(helper-func (send graph subcall arg ...) func-call ...)]))
+
+(define-syntax (helper-func stx)
+  (syntax-parse stx
+    #:datum-literals (function-call)
+    [(_ graph final)
+     #'(send graph final)]
+    [(_ graph (function-call first-subcall) (function-call subcall) ...)
+     #'(helper-func (send graph first-subcall) subcall ...)]))
 
 (define-syntax-rule (calculation expr1 op expr2)
   (op expr1 expr2))
