@@ -50,8 +50,9 @@
 (define-syntax (graph-expression stx)
   (syntax-parse stx
     #:datum-literals (graph-expression function-call)
-    [(graph-expression (function-call subcall))
-     #'(send graph subcall)]))
+    [(graph-expression (function-call subcall arg ...))
+     #'(send graph subcall arg ...)]
+    ))
 
 (graphical-program
     (expression-sequence
