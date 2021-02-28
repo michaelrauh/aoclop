@@ -16,12 +16,15 @@
 
     (define/public (add x y)
       (define old-position (car (hash-ref positions current-color)))
+      
       (define current-position (point (+ x (point-x old-position)) (+ y (point-y old-position))))
       (hash-set! positions current-color (cons current-position (hash-ref positions current-color))))
 
     (define/public (intersects)
       (define (filter-list-origin l)
         (filter (λ (x) (not (equal? x origin))) l))
+
+      ;(display positions)
 
       (define nonempty-possibles (filter (λ (l) (not (null? l)))
                                          (map filter-list-origin
@@ -47,41 +50,21 @@
     (init magnitudes)
     (super-new)
     (define mags magnitudes)
-    
     (define/public (minimum)
       (define (min-2 x y)
         (if (< x y) x y))
       (foldl min-2 (car mags) (cdr mags)))))
-  
-
-
-(module+ test
-  (require rackunit)
-  (define current-graph (new graph%))
-  (send current-graph changecolor)
-  (send current-graph add 1 2)
-  (send current-graph add 1 2)
-  (send current-graph add 1 2)
-  (send current-graph changecolor)
-  (send current-graph add 1 2)
-  (send current-graph add 1 2)
-  (define intersects (send current-graph intersects))
-  (define mags (send intersects magnitudes))
-  (define actual (send mags minimum))
-
-  (check-equal? actual 3))
 
 (module+ test
   (require rackunit)
   (define graph (new graph%))
   (send graph changecolor)
-  (send graph add 1 2)
-  (send graph add 1 2)
-  (send graph add 1 2)
+  (send graph add 5 0)
+  (send graph add 0 5)
+  (send graph add -6 0)
   (send graph changecolor)
-  (send graph add 1 2)
-  (send graph add 1 2)
+  (send graph add 0 7)
   (define res (send (send (send graph intersects) magnitudes) minimum))
 
-  (check-equal? res 3))
+  (check-equal? res 5))
 

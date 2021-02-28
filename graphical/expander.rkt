@@ -7,6 +7,7 @@
 (require threading)
 (provide read-string)
 (provide delimiter)
+(provide operator)
 
 
 (define graph (new graph%))
@@ -15,9 +16,11 @@
 
 (define-syntax-rule (graphical-program (expression-sequence expr ...))
   (expr ...))
+(provide graphical-program)
 
 (define-syntax-rule (expression subexpr)
   subexpr)
+(provide expression)
 
 (define-for-syntax (process-split stx)
   stx)
@@ -37,15 +40,19 @@
      #'(for ([iter gen-expr.expr])
          (let ([id-seq.ident (substring iter id-seq.offset (+ 1 id-seq.offset))] ... [id-seq.ident-l (substring iter id-seq.step)])
          subexpr ...))]))
+(provide loop)
 
 (define (split-expression contents delim)
   (string-split contents delim))
+(provide split-expression)
 
 (define-syntax-rule (assignment from to)
   (define from to))
+(provide assignment)
 
 (define-syntax-rule (case-select to-find (hashmap entry ...) (default default-value))
   (hash-ref (hash entry ...) to-find default-value))
+(provide case-select)
 
 (define-syntax (graph-expression stx)
   (syntax-parse stx
@@ -54,6 +61,7 @@
      #'(send graph subcall arg ...)]
     [(graph-expression (function-call subcall arg ...) func-call ...)
      #'(helper-func (send graph subcall arg ...) func-call ...)]))
+(provide graph-expression)
 
 (define-syntax (helper-func stx)
   (syntax-parse stx
@@ -64,49 +72,5 @@
      #'(helper-func (send graph first-subcall) subcall ...)]))
 
 (define-syntax-rule (calculation expr1 op expr2)
-  (op expr1 expr2))
-
-(graphical-program
-    (expression-sequence
-     (expression
-      (loop
-       (binding-set
-        (identifier-sequence wire)
-        (expression (read-string 3 (delimiter "newline"))))
-       (expression-sequence
-        (expression (graph-expression (function-call changecolor)))
-        (expression
-         (loop
-          (binding-set
-           (identifier-sequence direction magnitude)
-           (expression (split-expression wire (delimiter "comma"))))
-          (expression-sequence
-           (expression
-            (assignment
-             upmultiplier
-             (expression
-              (case-select direction (hashmap "U" 1 "D" -1) (default 0)))))
-           (expression
-            (assignment
-             leftmultiplier
-             (expression
-              (case-select direction (hashmap "L" 1 "R" -1) (default 0)))))
-           (expression
-            (graph-expression
-             (function-call
-              add
-              (expression
-               (calculation
-                (expression upmultiplier)
-                (operator "*")
-                (expression magnitude)))
-              (expression
-               (calculation
-                (expression leftmultiplier)
-                (operator "*")
-                (expression magnitude))))))))))))
-     (expression
-      (graph-expression
-       (function-call intersects)
-       (function-call magnitudes)
-       (function-call minimum)))))
+  (op (if (string? expr1) (string->number expr1) expr1) (if (string? expr2) (string->number expr2) expr2)))
+(provide calculation)
