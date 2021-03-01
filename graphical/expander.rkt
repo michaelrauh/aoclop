@@ -14,9 +14,13 @@
 
 (require(for-syntax syntax/parse racket/list))
 
-(define-syntax-rule (graphical-program (expression-sequence expr ...))
-  (expr ...))
+(define-syntax-rule (graphical-program expression-sequence)
+  expression-sequence)
 (provide graphical-program)
+
+(define-syntax-rule (expression-sequence expr ...)
+  (begin expr ...))
+(provide expression-sequence)
 
 (define-syntax-rule (expression subexpr)
   subexpr)

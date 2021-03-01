@@ -3,6 +3,20 @@
 (struct point (x y) #:transparent)
 (provide graph%)
 
+(define (find-y-path p y)
+  (define start-y (point-y p))
+  (define fill-x (point-x p))
+  (define sign (if (positive? y) 1 -1))
+  (define ys (range (+ sign start-y) (+ start-y y sign) sign))
+  (map (λ (y-pos) (point fill-x y-pos)) ys))
+
+(define (find-x-path p x)
+  (define start-x (point-x p))
+  (define fill-y (point-y p))
+  (define sign (if (positive? x) 1 -1))
+  (define xs (range (+ sign start-x) (+ start-x x sign) sign))
+  (map (λ (x-pos) (point x-pos fill-y)) xs))
+
 (define graph%
   (class object%
     (super-new)
@@ -15,22 +29,22 @@
       (hash-set! positions current-color (list origin)))
 
     (define/public (add x y)
-      (define old-position (car (hash-ref positions current-color)))
+      (define current-color-positions (hash-ref positions current-color))
       
-      (define current-position (point (+ x (point-x old-position)) (+ y (point-y old-position))))
-      (hash-set! positions current-color (cons current-position (hash-ref positions current-color))))
+      (define old-position (car current-color-positions))
+      (define path (if (not (zero? x)) (find-x-path old-position x) (find-y-path old-position y))) ; note: this assumes movement across one axis at a time, which is guaranteed by the question for now
+      (define result-path (append (reverse path) current-color-positions))
+      (hash-set! positions current-color result-path))
 
     (define/public (intersects)
       (define (filter-list-origin l)
         (filter (λ (x) (not (equal? x origin))) l))
 
-      ;(display positions)
-
       (define nonempty-possibles (filter (λ (l) (not (null? l)))
                                          (map filter-list-origin
                                               (map (λ (x) (hash-ref positions x))
                                                    (range (+ 1 current-color))))))
-      (define intersections (apply set-intersect nonempty-possibles))
+      (define intersections (set->list (apply set-intersect (map list->set nonempty-possibles)))) ; note: this optimization is only possible because order does not matter, which is guaranteed by the question for now
       (new intersects% [intersections intersections]))))
 
 (define intersects%
