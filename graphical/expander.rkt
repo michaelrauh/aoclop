@@ -3,7 +3,7 @@
 (provide #%module-begin)
 
 (require "../util.rkt")
-(require "../temp.rkt")
+(require "graph.rkt")
 (require threading)
 (provide read-string)
 (provide delimiter)
