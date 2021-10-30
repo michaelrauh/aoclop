@@ -25,7 +25,7 @@
     (define positions (make-hash (list (cons current-color (list origin)))))
 
     (define/public (changecolor)
-      (set! current-color (+ 1 current-color))
+      (set! current-color (add1 current-color))
       (hash-set! positions current-color (list origin)))
 
     (define/public (add x y)
@@ -43,7 +43,7 @@
       (define nonempty-possibles (filter (λ (l) (not (null? l)))
                                          (map filter-list-origin
                                               (map (λ (x) (hash-ref positions x))
-                                                   (range (+ 1 current-color))))))
+                                                   (range (add1 current-color))))))
       (define intersections (set->list (apply set-intersect (map list->set nonempty-possibles)))) ; note: this optimization is only possible because order does not matter, which is guaranteed by the question for now
       (new intersects% [intersections intersections]))))
 
@@ -59,15 +59,19 @@
                                              (abs (point-y p))))
                                         ints)]))))
 
+(define delays%
+  (class object%
+    (init delays)
+    (super-new)
+    (define dels delays)))
+
 (define magnitudes%
   (class object%
     (init magnitudes)
     (super-new)
     (define mags magnitudes)
     (define/public (minimum)
-      (define (min-2 x y)
-        (if (< x y) x y))
-      (foldl min-2 (car mags) (cdr mags)))))
+      (apply min mags))))
 
 (module+ test
   (require rackunit)
