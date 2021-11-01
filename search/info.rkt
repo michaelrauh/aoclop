@@ -1,6 +1,11 @@
 #lang info
 (define collection "search")
-(define deps '("base"))
+(define deps '("beautiful-racket-lib"
+               "brag-lib"
+               "htdp-lib"
+               "rackunit-lib"
+               "tape"
+               "base"))
 (define build-deps '("scribble-lib" "racket-doc" "rackunit-lib"))
 (define scribblings '(("scribblings/tape.scrbl" ())))
 (define pkg-desc "Description Here")

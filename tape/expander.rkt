@@ -2,7 +2,7 @@
 
 (provide #%module-begin)
 (require threading)
-(require "../util.rkt")
+(require "util.rkt")
 (provide read)
 (provide delimiter)
 (require lens)

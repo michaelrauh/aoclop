@@ -1,10 +1,8 @@
-#lang br/quicklang
+#lang racket
 
-(provide #%module-begin)
-
-(require "../util.rkt")
+(provide #%top #%app #%datum #%top-interaction #%module-begin)
+(require "util.rkt")
 (require "graph.rkt")
-(require threading)
 (provide read-string)
 (provide delimiter)
 (provide operator)
