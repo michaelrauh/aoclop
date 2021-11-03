@@ -5,13 +5,12 @@ find:
 end
 
 assuming:
-  for a, b:
+  and a, b:
     a - b >= 0
   end
 
-  or:
-    for a, b:
-      a = b
-    end
+  or a, b:
+    a = b
   end
 end
+  
