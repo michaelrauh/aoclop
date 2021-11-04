@@ -17,7 +17,8 @@
   (syntax-case stx ()
     [(delimiter "nl") #'"\n"]
     [(delimiter "comma") #'","]
-    [(delimiter "newline") #'"\n"]))
+    [(delimiter "newline") #'"\n"]
+    [(delimiter "dash") #'"-"]))
 (provide delimiter)
 
 (define-syntax (operator stx)

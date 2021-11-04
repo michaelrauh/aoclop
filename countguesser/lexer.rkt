@@ -14,6 +14,7 @@
    ["," (token 'COMMA lexeme)]
    [":" (token 'COLON lexeme)]
    [">=" (token 'GEQ lexeme)]
+   ["<=" (token 'LEQ lexeme)]
    ["in" (token 'IN lexeme)]
    [operators (token 'OPERATOR lexeme)]
    ["=" (token 'EQ lexeme)]
