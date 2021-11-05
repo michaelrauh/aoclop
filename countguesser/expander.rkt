@@ -40,24 +40,42 @@
     (pattern (bool-exp (loop-exp "or" (binding id ...) inner-bool))
              #:with step (datum->syntax stx (length (syntax->datum #'(id ...))))
              #:with (offset ...) (datum->syntax stx (range (syntax->datum #'step)))))
+
+  (define-syntax-class pador-bools
+    #:description "an or expression reducing to true or false with padding on the beginning and end that will not match any digit"
+    #:datum-literals (bool-exp loop-expr binding)
+    (pattern (bool-exp (loop-exp "pador" (binding id ...) inner-bool))
+             #:with step (datum->syntax stx (length (syntax->datum #'(id ...))))
+             #:with (offset ...) (datum->syntax stx (range (syntax->datum #'step)))))
   (syntax-parse stx
     ([_ expr:and-bools x]
      #'(for/and ([expr.id (drop (int->list x) expr.offset)] ...)
          expr.inner-bool))
     ([_ expr:or-bools x]
      #'(for/or ([expr.id (drop (int->list x) expr.offset)] ...)
+         expr.inner-bool))
+    ([_ expr:pador-bools x]
+     #'(for/or ([expr.id (drop (pad (int->list x)) expr.offset)] ...)
          expr.inner-bool))))
 
-(define-syntax-rule (bool-exp arith comp arith2)
-  (comp arith arith2))
+(define (pad l)
+  (flatten (append (list -1) l (list -1))))
+
+(define-syntax (bool-exp stx)
+  (syntax-case stx ()
+    [(_ bool "and" bool2) #'(and bool bool2)]
+    [(_ arith comp arith2) #'(comp arith arith2)]))
 (provide bool-exp)
 
 (define-syntax (comp stx)
   (syntax-case stx ()
     [(_ ">=") #'>=]
     [(_ "<=") #'<=]
-    [(_ "=") #'=]))
+    [(_ "=") #'=]
+    [(_ "!=") #'!=]))
 (provide comp)
+
+(define != (compose1 not =))
 
 (define-syntax (arith-expr stx)
   (syntax-case stx ()
