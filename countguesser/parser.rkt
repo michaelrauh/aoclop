@@ -1,0 +1,10 @@
+#lang brag
+countguesser-program   : read-block assume-block
+read-block             : /FIND /COLON range-read /END
+range-read             : /READ INTEGER /BY DELIMITER
+assume-block           : /ASSUMING /COLON bool-exp* /END
+bool-exp               : (arith-expr) comp (arith-expr) | loop-expr | bool-exp AND bool-exp
+loop-expr              : (AND|OR|PADOR) binding /COLON bool-exp /END
+arith-expr             : IDENTIFIER | INTEGER | (arith-expr OPERATOR arith-expr)
+binding                : (IDENTIFIER /COMMA?)+
+comp                   : EQ | GEQ | LEQ | NEQ

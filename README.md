@@ -1,3 +1,5 @@
+# AOCLOP (Advent of code, with language oriented programming)
+
 # Mission Statement
 
 This is a project to attempt to make a language that is well-suited to solving Advent of Code problems. It is written in Racket.
@@ -13,6 +15,9 @@ Right now there are a few answers in place. Each file is named for the day and s
 * 2.1.rkt: Written in `tape`
 * 2.2_answer.rkt: Written in `search`. This program calls in to 2.2_tape.rkt which is written in `tape`. This necessesitated allowing `tape` programs to take in arguments. The tape program is otherwise the same as in 1.1
 * 3.1.rkt: Written in `graphical`
+* 3.2.rkt: Written in `graphical`
+* 4.1.rkt: Written in `countguesser`
+* 4.2.rkt: Written in `countguesser`
 
 ## Future work
 1. Continue to solve days using existing or new DSLs
@@ -35,4 +40,7 @@ A language intended to connect to another language and give it inputs until a ce
 
 ## Graphical
 An object oriented language that does not provide the ability to create objects. There is a built in global graph that takes in data at runtime and can be queried for graph intersects across different colors.
+
+## Countguesser
+A language that is intended to search in a range of numbers and operate on the digits of the numbers. Outside of the read block, all statements are anded together boolean statements. And and or or together a sliding loop of bound variables within the context of one try. Pador pads the digits before oring over them.
 
