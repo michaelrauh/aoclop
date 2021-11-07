@@ -22,28 +22,21 @@
 (provide countguesser-program)
 
 (define-syntax (handle-assumption stx)
-  (define-syntax-class and-bools
-    #:datum-literals (bool-exp loop-expr binding)
-    (pattern (bool-exp (loop-exp "and" (binding id:id ...) inner-bool:expr))
-             #:with (offset ...) (datum->syntax stx (range (length (syntax->datum #'(id ...)))))))
-  (define-syntax-class or-bools
-    #:datum-literals (bool-exp loop-expr binding)
-    (pattern (bool-exp (loop-exp "or" (binding id:id ...) inner-bool:expr))
-             #:with (offset ...) (datum->syntax stx (range (length (syntax->datum #'(id ...)))))))
-  (define-syntax-class pador-bools
-    #:datum-literals (bool-exp loop-expr binding)
-    (pattern (bool-exp (loop-exp "pador" (binding id:id ...) inner-bool:expr))
-             #:with (offset ...) (datum->syntax stx (range (length (syntax->datum #'(id ...)))))))
+  (define-syntax-class binding
+    #:datum-literals (binding)
+    (pattern (binding id:id ...)
+             #:with (offset ...) (datum->syntax stx (range (length (syntax->datum #'(id ...)))))))  
   (syntax-parse stx
-    ([_ expr:and-bools x]
-     #'(for/and ([expr.id (drop (int->list x) expr.offset)] ...)
-         expr.inner-bool))
-    ([_ expr:or-bools x]
-     #'(for/or ([expr.id (drop (int->list x) expr.offset)] ...)
-         expr.inner-bool))
-    ([_ expr:pador-bools x]
-     #'(for/or ([expr.id (drop (pad (int->list x)) expr.offset)] ...)
-         expr.inner-bool))))
+    #:datum-literals (bool-exp loop-expr)
+    ([_ (bool-exp (loop-expr "and" bind:binding inner-bool:expr)) x]
+     #'(for/and ([bind.id (drop (int->list x) bind.offset)] ...)
+         inner-bool))
+    ([_ (bool-exp (loop-expr "or" bind:binding inner-bool:expr)) x]
+     #'(for/or ([bind.id (drop (int->list x) bind.offset)] ...)
+         inner-bool))
+    ([_ (bool-exp (loop-expr "pador" bind:binding inner-bool:expr)) x]
+     #'(for/or ([bind.id (drop (pad (int->list x)) bind.offset)] ...)
+         inner-bool))))
 
 (define (pad l)
   (flatten (append (list -1) l (list -1))))
@@ -69,3 +62,26 @@
     [(_ id-or-number) #'id-or-number]
     [(_ first "-" second) #'(- first second)]))
 (provide arith-expr)
+
+(countguesser-program
+ (read-block (range-read 4 "dash"))
+ (assume-block
+  (bool-exp
+   (loop-expr
+    "and"
+    (binding a b)
+    (bool-exp
+     (arith-expr (arith-expr a) "-" (arith-expr b))
+     (comp "<=")
+     (arith-expr 0))))
+  (bool-exp
+   (loop-expr
+    "pador"
+    (binding a b c d)
+    (bool-exp
+     (bool-exp
+      (bool-exp (arith-expr b) (comp "=") (arith-expr c))
+      "and"
+      (bool-exp (arith-expr a) (comp "!=") (arith-expr b)))
+     "and"
+     (bool-exp (arith-expr c) (comp "!=") (arith-expr d)))))))
