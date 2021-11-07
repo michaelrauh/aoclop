@@ -62,26 +62,3 @@
     [(_ id-or-number) #'id-or-number]
     [(_ first "-" second) #'(- first second)]))
 (provide arith-expr)
-
-(countguesser-program
- (read-block (range-read 4 "dash"))
- (assume-block
-  (bool-exp
-   (loop-expr
-    "and"
-    (binding a b)
-    (bool-exp
-     (arith-expr (arith-expr a) "-" (arith-expr b))
-     (comp "<=")
-     (arith-expr 0))))
-  (bool-exp
-   (loop-expr
-    "pador"
-    (binding a b c d)
-    (bool-exp
-     (bool-exp
-      (bool-exp (arith-expr b) (comp "=") (arith-expr c))
-      "and"
-      (bool-exp (arith-expr a) (comp "!=") (arith-expr b)))
-     "and"
-     (bool-exp (arith-expr c) (comp "!=") (arith-expr d)))))))
