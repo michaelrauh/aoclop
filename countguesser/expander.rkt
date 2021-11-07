@@ -8,45 +8,32 @@
 
 (require(for-syntax syntax/parse racket/list))
 
-(define (int->list n) (if (zero? n) `()
+(define (int->list n) (if (zero? n) null
                           (append (int->list (quotient n 10)) (list (remainder n 10)))))
 
 (define-syntax (countguesser-program stx)
-  (define-syntax-class assume
-    #:description "anded together rules"
-    #:datum-literals (assume-block)
-    (pattern (assume-block bool-exp ...)))
-  (define-syntax-class read-class
-    #:description "the read range"
-    #:datum-literals (read-block range-read)
-    (pattern (read-block (range-read number delim))))
   (syntax-parse stx
-    [(_ read-block:read-class assum:assume)
-     #'(for/sum ([x (in-range (car (read read-block.number (delimiter read-block.delim))) (cadr (read read-block.number (delimiter read-block.delim))))]
-                 #:when (and (handle-assumption assum.bool-exp x) ...))
-         1)]))
+    #:datum-literals (read-block rang-read assume-block)
+    [(_ (read-block (range-read number:number delim:string)) (assume-block bool-exp:expr ...))
+     #' (let ([data (read number (delimiter delim))])
+          (for/sum ([x (in-range (car data) (cadr data))]
+                    #:when (and (handle-assumption bool-exp x) ...))
+            1))]))
 (provide countguesser-program)
 
 (define-syntax (handle-assumption stx)
   (define-syntax-class and-bools
-    #:description "an and expression reducing to true or false"
     #:datum-literals (bool-exp loop-expr binding)
-    (pattern (bool-exp (loop-exp "and" (binding id ...) inner-bool))
-             #:with step (datum->syntax stx (length (syntax->datum #'(id ...))))
-             #:with (offset ...) (datum->syntax stx (range (syntax->datum #'step)))))
+    (pattern (bool-exp (loop-exp "and" (binding id:id ...) inner-bool:expr))
+             #:with (offset ...) (datum->syntax stx (range (length (syntax->datum #'(id ...)))))))
   (define-syntax-class or-bools
-    #:description "an or expression reducing to true or false"
     #:datum-literals (bool-exp loop-expr binding)
-    (pattern (bool-exp (loop-exp "or" (binding id ...) inner-bool))
-             #:with step (datum->syntax stx (length (syntax->datum #'(id ...))))
-             #:with (offset ...) (datum->syntax stx (range (syntax->datum #'step)))))
-
+    (pattern (bool-exp (loop-exp "or" (binding id:id ...) inner-bool:expr))
+             #:with (offset ...) (datum->syntax stx (range (length (syntax->datum #'(id ...)))))))
   (define-syntax-class pador-bools
-    #:description "an or expression reducing to true or false with padding on the beginning and end that will not match any digit"
     #:datum-literals (bool-exp loop-expr binding)
-    (pattern (bool-exp (loop-exp "pador" (binding id ...) inner-bool))
-             #:with step (datum->syntax stx (length (syntax->datum #'(id ...))))
-             #:with (offset ...) (datum->syntax stx (range (syntax->datum #'step)))))
+    (pattern (bool-exp (loop-exp "pador" (binding id:id ...) inner-bool:expr))
+             #:with (offset ...) (datum->syntax stx (range (length (syntax->datum #'(id ...)))))))
   (syntax-parse stx
     ([_ expr:and-bools x]
      #'(for/and ([expr.id (drop (int->list x) expr.offset)] ...)
