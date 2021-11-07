@@ -13,7 +13,7 @@
 
 (define-syntax (countguesser-program stx)
   (syntax-parse stx
-    #:datum-literals (read-block rang-read assume-block)
+    #:datum-literals (read-block range-read assume-block)
     [(_ (read-block (range-read number:number delim:string)) (assume-block bool-exp:expr ...))
      #' (let ([data (read number (delimiter delim))])
           (for/sum ([x (in-range (car data) (cadr data))]
