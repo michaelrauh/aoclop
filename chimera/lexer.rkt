@@ -6,6 +6,8 @@
 (define aoclop-lexer
   (lexer-srcloc
    ["read:" (token 'READ lexeme)]
+   ["end" (token 'END lexeme)]
+   ["mappetizer" (token 'MAPPETIZER lexeme)]
    ["\n" (token 'NEWLINE lexeme)]
    ["nl" (token 'DELIMITER lexeme)]
    ["floor" (token 'OP lexeme)]
