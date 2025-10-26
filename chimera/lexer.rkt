@@ -21,6 +21,7 @@
    ["sum" (token 'COLLECT lexeme)]
    ["^" (token 'UPSCOPE lexeme)]
    ["v" (token 'DOWNSCOPE lexeme)]
+   [(:seq alphabetic (:* (:or alphabetic numeric "$"))) (token 'ID (string->symbol lexeme))]
    [digits (token 'INTEGER (string->number lexeme))]
    [whitespace (token lexeme #:skip? #t)]))
 (provide aoclop-lexer)

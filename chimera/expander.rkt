@@ -18,7 +18,7 @@
         0
         (+ step (converge proc step)))))
 
-(define-syntax-rule (chimera-program read scope-block collect)
+(define-syntax-rule (chimera-program ident read scope-block collect)
   (apply collect (read-scope scope-block read)))
 
 (define-syntax (read-scope stx)
