@@ -18,10 +18,12 @@
         0
         (+ step (converge proc step)))))
 
-(define-syntax-rule (chimera-program ident read scope-block collect identtwo)
-  (begin
-    (define ident (λ () (apply collect (read-scope scope-block read))))
-    (identtwo)))
+(define-syntax (chimera-program stx)
+  (syntax-parse stx
+  [(_ (_mappetizer-block id:id read:expr scope-block collect:expr) entry:id)
+   #'(begin
+     (define id (λ () (apply collect (read-scope scope-block read))))
+     (entry))]))
 
 (define-syntax (read-scope stx)
   (syntax-parse stx
