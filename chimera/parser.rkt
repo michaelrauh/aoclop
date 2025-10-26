@@ -1,5 +1,5 @@
 #lang brag
-chimera-program : /NEWLINE* /MAPPETIZER ID /NEWLINE* read scope-block /PIPE collect /NEWLINE /END
+chimera-program : /NEWLINE* /MAPPETIZER ID /NEWLINE* read scope-block /PIPE collect /NEWLINE /END /NEWLINE* ID
 read           : /READ INTEGER delimiter
 scope-block    : /PIPE /DOWNSCOPE /PIPE all-ops /PIPE /UPSCOPE | /PIPE /DOWNSCOPE /PIPE converge-block /PIPE /UPSCOPE
 delimiter      : DELIMITER

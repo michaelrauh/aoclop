@@ -18,8 +18,10 @@
         0
         (+ step (converge proc step)))))
 
-(define-syntax-rule (chimera-program ident read scope-block collect)
-  (apply collect (read-scope scope-block read)))
+(define-syntax-rule (chimera-program ident read scope-block collect identtwo)
+  (begin
+    (define ident (λ () (apply collect (read-scope scope-block read))))
+    (identtwo)))
 
 (define-syntax (read-scope stx)
   (syntax-parse stx
