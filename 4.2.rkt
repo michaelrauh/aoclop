@@ -10,11 +10,10 @@ countguesser main
       a - b <= 0
     end
 
-    or a, b:
-      a = b
+    pador a, b, c, d:
+      b = c and a != b and c != d
     end
   end
 end
 
 main
-  

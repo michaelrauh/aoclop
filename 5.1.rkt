@@ -1,26 +1,30 @@
-#lang tape
+#lang chimera
 
-read: 5 comma
-firstdigit <= takeright 
+tape main
+  read: 5 comma
+  firstdigit <= takeright 
 
-if firstdigit = 9:
-  exit 
+  if firstdigit = 9:
+    exit 
 
-takeright
+  takeright
 
-if firstdigit = 3:
- advance  <- read
+  if firstdigit = 3:
+  advance  <- read
 
-if firstdigit = 4:
-  read  <= match takeright in {0: ->, 1: <=}
-  param <= read advance
-  evaluate write param
+  if firstdigit = 4:
+    read  <= match takeright in {0: ->, 1: <=}
+    param <= read advance
+    evaluate write param
 
-op <= match firstdigit in {1: +, 2: *}
-read1 <= match takeright in {0: ->, 1: <=}
-read2 <= match takeright in {0: ->, 1: <=}
+  op <= match firstdigit in {1: +, 2: *}
+  read1 <= match takeright in {0: ->, 1: <=}
+  read2 <= match takeright in {0: ->, 1: <=}
 
-param1 = read1 advance
-param2 = read2 advance
+  param1 = read1 advance
+  param2 = read2 advance
 
-advance <- evaluate param1 op param2
+  advance <- evaluate param1 op param2
+end
+
+main
